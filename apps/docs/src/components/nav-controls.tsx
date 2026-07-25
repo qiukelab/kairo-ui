@@ -57,13 +57,24 @@ export function ThemeToggleButton({ locale }: { locale: Locale }) {
       aria-label={HOME_COPY[locale].nav.toggleTheme}
       className={NAV_ICON_BUTTON}
     >
-      {/* `resolvedTheme` is undefined until next-themes hydrates; rendering the
-          sun until then keeps server and client markup identical. */}
-      {resolvedTheme === 'dark' ? (
-        <Moon className="size-4.5" aria-hidden />
-      ) : (
-        <Sun className="size-4.5" aria-hidden />
-      )}
+      {/* next-themes resolves `resolvedTheme` from `localStorage`/`matchMedia`
+          inside a `useState` initializer, and that initializer runs DURING the
+          hydration render itself — not after it. So a visitor whose OS prefers
+          dark hydrates straight into `resolvedTheme === 'dark'`, while the
+          server (which has no access to either) always rendered the `undefined`
+          branch. A theme-dependent ternary here is therefore a guaranteed
+          mismatch on first paint for such a visitor, not just a brief flash: Sun
+          is a `<circle>` plus eight `<path>`s and Moon is a single `<path>`, so
+          React can't reconcile one into the other and throws the structural
+          mismatch #418.
+
+          Both icons render unconditionally instead, and CSS (see the unlayered
+          block at the bottom of app.css) picks the one that matches `<html
+          class>`, which next-themes sets from a blocking inline script before
+          first paint. Markup no longer depends on the theme, so there is
+          nothing left to mismatch. */}
+      <Sun className="kairo-mode-icon-light size-4.5" aria-hidden />
+      <Moon className="kairo-mode-icon-dark size-4.5" aria-hidden />
     </button>
   );
 }

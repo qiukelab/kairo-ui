@@ -329,3 +329,30 @@ html > body[data-scroll-locked] {
     padding-inline: 6rem;
   }
 }
+
+/*
+ * `ThemeToggleButton` (nav-controls.tsx) renders both Sun and Moon
+ * unconditionally — a ternary on `resolvedTheme` there is a hydration
+ * mismatch, since next-themes resolves that value inside a `useState`
+ * initializer during the hydration render itself, not after it. These rules
+ * do the actual switching instead, keyed off `<html class="dark">`, which
+ * next-themes sets from a blocking inline script before first paint.
+ *
+ * Deliberately plain CSS, NOT Tailwind's `dark:` variant: this project
+ * defines no `@custom-variant dark`, so `dark:` currently compiles to
+ * `@media (prefers-color-scheme: dark)` — it tracks the OS, not the
+ * `.dark` class the toggle actually writes. `dark:hidden` here would show
+ * the wrong icon for anyone whose OS preference disagrees with their chosen
+ * theme. Do not "simplify" this back to `dark:` classes.
+ */
+.kairo-mode-icon-dark {
+  display: none;
+}
+
+.dark .kairo-mode-icon-light {
+  display: none;
+}
+
+.dark .kairo-mode-icon-dark {
+  display: block;
+}
