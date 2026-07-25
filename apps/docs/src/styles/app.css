@@ -37,6 +37,41 @@
 @import 'fumadocs-ui/css/preset.css';
 
 /*
+ * Without this, EVERY `dark:` utility in the app — ours and every one
+ * Fumadocs ships — compiles to `@media (prefers-color-scheme: dark)` instead
+ * of tracking the toggle. Tailwind 4 only switches `dark:` to a class-based
+ * variant when a `@custom-variant dark` is declared somewhere, and nothing in
+ * this project declared one.
+ *
+ * The shape of the breakage, using the one `dark:` utility Fumadocs actually
+ * ships: `fumadocs-ui/css/generated/shared.css` inlines
+ * `dark:bg-(--shiki-dark-bg)` for the code block background, while
+ * `fumadocs-ui/css/lib/shiki.css` colours the token spans through the
+ * class-based selector `.dark .shiki code span` / `.dark code.shiki span`.
+ * Two different mechanisms for one feature: a visitor whose OS is light but
+ * who switches the site to dark would get the `.dark`-selector token colours
+ * (matching `<html class="dark">`, set by next-themes) on the media-query
+ * background (OS is light, so it never switches) — dark syntax-highlighted
+ * text on a light block.
+ *
+ * Measured caveat, so nobody re-derives it: that particular pairing does not
+ * currently misrender here. Grepping all 138 prerendered pages finds zero
+ * elements carrying `dark:bg-(--shiki-dark-bg)` — our code blocks take their
+ * background from `bg-fd-card`, and `--color-fd-card` is already switched by a
+ * literal `.dark { … }` block in `fumadocs-ui/css/lib/default-colors.css`.
+ * So this variant is a trap defused before it fired rather than a visible bug
+ * fixed: it is what stops the next `dark:` utility — written by us, or arriving
+ * in a Fumadocs update — from silently following the OS instead of the toggle.
+ *
+ * `&:where(.dark, .dark *)` mirrors next-themes' own class strategy: `dark:`
+ * now matches inside `<html class="dark">` regardless of what the OS
+ * prefers. `:where()` keeps the variant at zero specificity, same as the
+ * media query it replaces, so it doesn't out-rank other utilities that
+ * target the same element.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
  * Square off Fumadocs' chrome to match Kairo's own squared tokens.
  *
  * fumadocs-ui exposes no radius variable — its corners are Tailwind utilities
