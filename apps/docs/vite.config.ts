@@ -70,6 +70,57 @@ export default defineConfig({
     mdx(),
     tailwindcss(),
     tanstackStart({
+      router: {
+        // `@tanstack/router-plugin`'s default code-split grouping is
+        // `[['component'], ['errorComponent'], ['notFoundComponent']]` —
+        // `pendingComponent` is deliberately NOT split by default (the
+        // `@default` JSDoc on `CodeSplittingOptions['defaultBehavior']` in
+        // the installed types claims otherwise; that comment is stale,
+        // trust the `defaultCodeSplitGroupings` constant instead).
+        //
+        // `routes/404.tsx` and `routes/$.tsx` both set `component: NotFound`
+        // and `pendingComponent: NotFound` from a single imported binding.
+        // With the default grouping, the splitter moves `component` (and
+        // the `import { NotFound } from '@/components/not-found'` feeding
+        // it) into a separate lazy chunk, but leaves `pendingComponent`
+        // behind in the route module referencing the now-pruned `NotFound`
+        // import. The result is a dangling identifier that blows up
+        // prerendering: `ReferenceError: NotFound is not defined` inside
+        // the built `router-*.js` chunk, thrown while rendering the route.
+        //
+        // Opting both routes out of code splitting (`splitBehavior`
+        // returning `[]` for either route id) fixes this for free: the
+        // `NotFound` component is already eagerly bundled regardless —
+        // `router.tsx` sets it as `defaultNotFoundComponent` and
+        // `__root.tsx` sets it as `notFoundComponent` — so splitting either
+        // route's own `component`/`pendingComponent` into a lazy chunk was
+        // never saving any bytes in the first place.
+        //
+        // Both routes need the SAME treatment for a second reason, beyond
+        // just avoiding the `ReferenceError`: only `/404` is ever actually
+        // prerendered (see the `pages` entry below; nothing links to a
+        // nonsense URL for the crawler to discover `/$`), and Cloudflare's
+        // `not_found_handling: "404-page"` serves that one prerendered
+        // `404.html` for *every* unmatched path, including ones that match
+        // `/$` on the client. For the client's hydration of `/$` to line up
+        // with the DOM those `404.html` bytes contain, `/$` has to be built
+        // with the identical option shape (`component` present, not just
+        // `pendingComponent`) and identical splitting treatment as `/404` —
+        // see the comment on `routes/$.tsx`'s `component` field.
+        //
+        // Do NOT "fix" this instead by adding `pendingComponent` to a
+        // *global* `defaultBehavior` grouping (e.g.
+        // `[['component', 'pendingComponent'], ...]`): `pendingComponent:
+        // NotFound` on `routes/$.tsx`, `routes/docs.$.tsx`, and
+        // `routes/th.docs.$.tsx` is load-bearing precisely because it is
+        // *not* split — it must be synchronously available at first client
+        // paint during hydration. Turning it into a `lazyRouteComponent`
+        // there would reintroduce the blank first paint that this whole
+        // `pendingComponent` setup exists to prevent.
+        codeSplittingOptions: {
+          splitBehavior: ({ routeId }) => (routeId === '/404' || routeId === '/$' ? [] : undefined),
+        },
+      },
       prerender: {
         // Fully static output: every route below (plus anything discovered
         // by crawling <a> links from them, e.g. every sidebar entry under

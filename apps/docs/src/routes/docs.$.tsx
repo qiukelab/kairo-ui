@@ -1,6 +1,7 @@
 import { createFileRoute, notFound } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { useFumadocsLoader } from 'fumadocs-core/source/client';
+import { NotFound } from '@/components/not-found';
 import { fetchDocsData } from '@/lib/docs-data-client';
 import { docsClientLoader, DocsPageBody } from '@/lib/docs-page';
 import { source } from '@/lib/source';
@@ -52,6 +53,31 @@ export const Route = createFileRoute('/docs/$')({
     await docsClientLoader.preload(data.path);
     return data;
   },
+  // A bad slug under `/docs/` (e.g. `/docs/no-such-page`) still matches this
+  // route — unlike a totally unmatched path, there's no `invariant()` throw
+  // here (see `routes/$.tsx`) — but the client's dehydrated-match lookup in
+  // `ssr-client.js`'s `hydrate()` finds no counterpart for it and sets
+  // `match.ssr = false`. That flips `resolvedNoSsr` to `true` in `Match.js`,
+  // which forces this match through a `<ClientOnly fallback={pendingElement}>`
+  // Suspense boundary. With no `pendingComponent` configured, `pendingElement`
+  // is `null`, so the very first client render paints nothing where the
+  // server painted the full `NotFound` tree — a hydration mismatch that makes
+  // React discard the SSR DOM and blank-flash before recovering.
+  // `pendingComponent: NotFound` makes that first client paint match the
+  // prerendered bytes exactly, so there's nothing to mismatch.
+  pendingComponent: NotFound,
+  // Mandatory, and not optional polish: setting a `pendingComponent` above
+  // arms `load-matches.js`'s `setupPendingTimeout`, which — left at its
+  // default — would flash the 404 page during a slow but legitimate
+  // client-side navigation into a real docs page while its loader is still
+  // in flight. `pendingMs: Infinity` disarms that timer specifically
+  // (`load-matches.js` skips arming it when `pendingMs === Infinity`)
+  // without touching the hydration-time pending display, which is driven
+  // separately through `hasForcePendingActiveMatch` and unaffected by this
+  // option. Net effect on navigation is unchanged from before this fix: today
+  // there is no `pendingComponent` at all, so this timer was never armed
+  // either.
+  pendingMs: Infinity,
   // `match.pathname` is this route's own resolved pathname — since `/docs/$`
   // is a leaf route, that's the exact current URL, used as-is for the
   // canonical link below (no need to reconstruct it from `params._splat`).

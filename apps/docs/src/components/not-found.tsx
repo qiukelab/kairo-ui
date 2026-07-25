@@ -1,8 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { HomeLayout } from 'fumadocs-ui/layouts/home';
-import { Link, useRouterState } from '@tanstack/react-router';
+import { Link, useHydrated, useRouterState } from '@tanstack/react-router';
 import { baseOptions } from '@/lib/layout.shared';
 import { localeFromPathname } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
@@ -61,15 +60,28 @@ export function NotFound() {
   // is `/404`, which `localeFromPathname` reads as `en`). On a fresh load at a
   // bad URL, Cloudflare's `not_found_handling` serves those same English bytes
   // under the original path — so the FIRST client paint must also be English,
-  // or React tears down the tree with a hydration mismatch. `mounted` gates the
-  // locale switch to after hydration: English on the first commit (matching the
-  // prerender), then the real locale from the URL — Thai under `/th/...` — on
-  // the next. A client-side navigation into a 404 was already correct; this
-  // only fixes the cold-load-at-a-bad-Thai-URL case.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  // or React tears down the tree with a hydration mismatch. `hydrated` gates
+  // the locale switch to after hydration: English on the first commit
+  // (matching the prerender), then the real locale from the URL — Thai under
+  // `/th/...` — on the next. A client-side navigation into a 404 was already
+  // correct; this only fixes the cold-load-at-a-bad-Thai-URL case.
+  //
+  // This used to be a local `useState(false)` flipped to `true` in a
+  // `useEffect`, but `NotFound` is now also mounted as a `pendingComponent`
+  // (see `routes/$.tsx`, `routes/docs.$.tsx`, `routes/th.docs.$.tsx`) as well
+  // as via `renderRouteNotFound` — two different React positions for the same
+  // bad URL, e.g. under `/th/<bad-slug>`. A per-instance `useState` gate
+  // resets between those two mounts, so the page would flicker EN→TH→EN→TH
+  // instead of settling once. `useHydrated()` is a `useSyncExternalStore`
+  // keyed off the module-level hydration flag, not component-instance state:
+  // it's `false` only for whichever component happens to render during the
+  // very first client commit, and `true` for every mount after that,
+  // regardless of how many components render across the transition. That
+  // preserves the "first paint is English" contract above while letting the
+  // second (and any later) render go straight to Thai.
+  const hydrated = useHydrated();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
-  const locale: Locale = mounted ? localeFromPathname(pathname) : 'en';
+  const locale: Locale = hydrated ? localeFromPathname(pathname) : 'en';
   const copy = NOT_FOUND_COPY[locale];
   const homeTo = locale === 'th' ? '/th' : '/';
 
