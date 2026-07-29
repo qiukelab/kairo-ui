@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    # This name is the status-check context the "Main protection" ruleset
+    # requires. Renaming the job renames the check, and every pull request
+    # becomes unmergeable until the ruleset is updated to match.
+    name: Build, typecheck, test & lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # `ci` rather than `install`: fails on a lockfile that disagrees with
+      # package.json instead of quietly resolving something else. Covers the
+      # cli workspace too.
+      - run: npm ci
+
+      - run: npm run format:check
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run test
+      - run: npm run build
+
+      # The site build does not compile the CLI, so it gets its own step —
+      # otherwise a broken CLI ships unnoticed.
+      - run: npm run cli:build
