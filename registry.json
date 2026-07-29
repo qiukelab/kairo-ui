@@ -54,7 +54,7 @@
       "type": "registry:ui",
       "title": "Card",
       "description": "A container with header, content, footer and action slots.",
-      "dependencies": [],
+      "dependencies": ["class-variance-authority"],
       "registryDependencies": ["utils"],
       "files": [
         { "path": "src/components/ui/card.tsx", "target": "ui/card.tsx", "type": "registry:ui" }

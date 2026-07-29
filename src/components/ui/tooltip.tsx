@@ -53,7 +53,16 @@ function TooltipContent({
         {...props}
       >
         {children}
-        <TooltipPrimitive.Arrow className="z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px] fill-foreground" />
+        {/*
+          The tip is the svg's own *background* — a square rotated 45° and
+          pulled halfway into the bubble, which is what lets it have a rounded
+          corner at all. `bg-foreground` is therefore load-bearing: with only
+          `fill-foreground` the box is transparent and the built-in polygon
+          ends up hidden behind the bubble, leaving no visible arrow. `fill`
+          still matters, or that polygon shows through as an off-colour
+          triangle. Change one, change both.
+        */}
+        <TooltipPrimitive.Arrow className="z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px] bg-foreground fill-foreground" />
       </TooltipPrimitive.Content>
     </TooltipPrimitive.Portal>
   )

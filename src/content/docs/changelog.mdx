@@ -1,5 +1,30 @@
 ## Unreleased
 
+### Fixed
+
+- **Tooltip** had no visible arrow. The tip is drawn from the arrow SVG's `background` — a square
+  rotated 45° and pulled into the bubble — but only `fill-foreground` was set, so the box was
+  transparent and the leftover polygon ended up hidden behind the bubble. Adding `bg-foreground`
+  restores it on all four sides.
+
+### Changed — a three-weight line ramp
+
+- `--input` lightens (`oklch(0.885 0.008 254)` → `oklch(0.915 0.007 254)`; dark `17%` → `12%`),
+  so a field outline stops competing with page structure.
+- New `--border-soft` (`oklch(0.935 0.006 254)`; dark `8%`) for dividers inside an elevated
+  surface. `Card`'s slots carry `border-border-soft`, so a `border-b` on `CardHeader` now draws
+  the light line automatically. `className="border-b border-border"` restores the old weight.
+- `--border` is unchanged: the tabs rail, sidebar, footer and code-block frames look exactly as
+  they did.
+
+### Added — Card variants
+
+- **Card** gains `size` (`default | sm`), mirrored to the DOM as `data-size`.
+- Card's insets now come from a `--card-spacing` custom property that every slot reads, instead
+  of a hard-coded `6`. That is what makes `-mx-(--card-spacing)` edge-to-edge content possible,
+  and it stays correct at `size="sm"`. Default rendering is unchanged.
+- Four worked examples on the Card page: Size, Login form, Edge-to-edge content, and Image.
+
 ### Added — the form cluster
 
 - **Field** — `Field`, `FieldLabel`, `FieldControl`, `FieldDescription`, `FieldError` and

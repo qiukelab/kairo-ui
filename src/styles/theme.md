@@ -37,21 +37,22 @@ Values are copied exactly. The distinguishing choice is the **hue of 254** carri
 neutrals — they are not grey, they are very slightly blue, which is what stops the palette
 reading as stock Tailwind.
 
-| Token            | Light                        | Dark                               | Source   |
-| ---------------- | ---------------------------- | ---------------------------------- | -------- |
-| `--background`   | `oklch(1 0 0)`               | `oklch(0.15 0.012 254)`            | Nongmuek |
-| `--foreground`   | `oklch(0.16 0.008 254)`      | `oklch(0.96 0.006 254)`            | Nongmuek |
-| `--card`         | `oklch(1 0 0)`               | `oklch(0.19 0.014 254)`            | Nongmuek |
-| `--popover`      | `oklch(1 0 0)`               | `oklch(0.22 0.014 254)`            | Nongmuek |
-| `--primary`      | `oklch(0.546 0.245 262.881)` | `oklch(0.707 0.165 254.624)`       | Nongmuek |
-| `--secondary`    | `oklch(0.965 0.006 254)`     | `oklch(0.24 0.014 254)`            | Nongmuek |
-| `--muted`        | `oklch(0.965 0.006 254)`     | `oklch(0.24 0.014 254)`            | Nongmuek |
-| `--accent`       | `oklch(0.955 0.008 254)`     | `oklch(0.27 0.016 254)`            | Nongmuek |
-| `--destructive`  | `oklch(0.577 0.245 27.325)`  | `oklch(0.704 0.191 22.216)`        | Nongmuek |
-| `--border`       | `oklch(0.885 0.008 254)`     | `oklch(1 0 0 / 13%)`               | Nongmuek |
-| `--input`        | `oklch(0.885 0.008 254)`     | `oklch(1 0 0 / 17%)`               | Nongmuek |
-| `--ring`         | `oklch(0.646 0.142 253.92)`  | `oklch(0.707 0.165 254.624 / 60%)` | Nongmuek |
-| `--surface-soft` | `oklch(0.965 0.015 254)`     | `oklch(0.22 0.02 254)`             | Nongmuek |
+| Token            | Light                        | Dark                               | Source            |
+| ---------------- | ---------------------------- | ---------------------------------- | ----------------- |
+| `--background`   | `oklch(1 0 0)`               | `oklch(0.15 0.012 254)`            | Nongmuek          |
+| `--foreground`   | `oklch(0.16 0.008 254)`      | `oklch(0.96 0.006 254)`            | Nongmuek          |
+| `--card`         | `oklch(1 0 0)`               | `oklch(0.19 0.014 254)`            | Nongmuek          |
+| `--popover`      | `oklch(1 0 0)`               | `oklch(0.22 0.014 254)`            | Nongmuek          |
+| `--primary`      | `oklch(0.546 0.245 262.881)` | `oklch(0.707 0.165 254.624)`       | Nongmuek          |
+| `--secondary`    | `oklch(0.965 0.006 254)`     | `oklch(0.24 0.014 254)`            | Nongmuek          |
+| `--muted`        | `oklch(0.965 0.006 254)`     | `oklch(0.24 0.014 254)`            | Nongmuek          |
+| `--accent`       | `oklch(0.955 0.008 254)`     | `oklch(0.27 0.016 254)`            | Nongmuek          |
+| `--destructive`  | `oklch(0.577 0.245 27.325)`  | `oklch(0.704 0.191 22.216)`        | Nongmuek          |
+| `--border`       | `oklch(0.885 0.008 254)`     | `oklch(1 0 0 / 13%)`               | Nongmuek          |
+| `--input`        | `oklch(0.915 0.007 254)`     | `oklch(1 0 0 / 12%)`               | **Adjusted here** |
+| `--border-soft`  | `oklch(0.935 0.006 254)`     | `oklch(1 0 0 / 8%)`                | **Added here**    |
+| `--ring`         | `oklch(0.646 0.142 253.92)`  | `oklch(0.707 0.165 254.624 / 60%)` | Nongmuek          |
+| `--surface-soft` | `oklch(0.965 0.015 254)`     | `oklch(0.22 0.02 254)`             | Nongmuek          |
 
 `--primary` is blue-600 in light mode and blue-400 in dark. That swap is Nongmuek's, and its
 comment records the reason: blue-600 reaches only ~2.4:1 against the dark background, while
@@ -77,11 +78,12 @@ page, so one was added; it joins the same Google Fonts request, costing no extra
 
 ## Added here, not inherited
 
-| Addition                                | Why                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--color-brand-50 … 950`                | Nongmuek has no ramp — its accent is a single value. The landing page needs gradients, so the ramp extends Nongmuek's two anchors (blue-600 light, blue-400 dark) across Tailwind's full blue scale in oklch. Declared in a plain `@theme`, not `@theme inline`, so decorative hues do not flip with the mode.                                                                                                              |
-| `--font-mono`                           | See above.                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `--shadow-card` / `--shadow-card-hover` | Nongmuek's cards are bordered, so it defines no elevation token. kairo-ui separates cards by shadow instead, which needs one — and needs it to change shape in dark mode, where a blurred shadow is invisible. The dark value leads with a zero-blur `0 0 0 1px` layer that draws the hairline the light shadow implies. Shadow colour is the hue-254 foreground rather than black, to stay in the palette's colour family. |
+| Addition                                 | Why                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--color-brand-50 … 950`                 | Nongmuek has no ramp — its accent is a single value. The landing page needs gradients, so the ramp extends Nongmuek's two anchors (blue-600 light, blue-400 dark) across Tailwind's full blue scale in oklch. Declared in a plain `@theme`, not `@theme inline`, so decorative hues do not flip with the mode.                                                                                                                |
+| `--font-mono`                            | See above.                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `--border-soft`, and a lighter `--input` | Nongmuek gives `--border` and `--input` the same value, which works there because its cards are bordered and every line is doing the same job. kairo-ui separates cards by shadow, so a line _inside_ a card is grouping, not separating, and at Nongmuek's weight it reads as clutter. The three now form a ramp — `--border` for page structure, `--input` for a control's outline, `--border-soft` for an in-card divider. |
+| `--shadow-card` / `--shadow-card-hover`  | Nongmuek's cards are bordered, so it defines no elevation token. kairo-ui separates cards by shadow instead, which needs one — and needs it to change shape in dark mode, where a blurred shadow is invisible. The dark value leads with a zero-blur `0 0 0 1px` layer that draws the hairline the light shadow implies. Shadow colour is the hue-254 foreground rather than black, to stay in the palette's colour family.   |
 
 ## Not carried over
 

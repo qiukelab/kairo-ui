@@ -64,9 +64,16 @@ time.
 | `--muted` / `--muted-foreground`         | Backgrounds and text that should recede.                                      |
 | `--accent` / `--accent-foreground`       | Hover and active states.                                                      |
 | `--destructive`                          | Irreversible actions.                                                         |
-| `--border` / `--input`                   | Hairlines and field outlines.                                                 |
+| `--border`                               | Page structure — the tabs rail, the sidebar, code-block frames.               |
+| `--input`                                | A control's own outline.                                                      |
+| `--border-soft`                          | A divider inside an already-elevated surface, such as a card.                 |
 | `--ring`                                 | Focus ring.                                                                   |
 | `--surface-soft`                         | Tinted insets — code blocks, callouts, table headers.                         |
+
+The three line tokens are a deliberate ramp, not three names for one grey. A card is already
+separated from the page by its elevation, so a divider inside it only has to group things — at
+`--border` strength it competes with the structure around it. Retint one and you should walk all
+three together.
 
 Each pair is contrast-checked in both themes. `--primary` is lighter in dark mode for exactly
 this reason: the light-mode blue only reaches 2.4:1 against the dark background, which fails

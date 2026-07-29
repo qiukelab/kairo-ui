@@ -30,8 +30,13 @@
   --accent: oklch(0.955 0.008 254);
   --accent-foreground: oklch(0.22 0.01 254);
   --destructive: oklch(0.577 0.245 27.325);
+  /* Three steps, because a line's job decides its weight: --border for
+     structure that organises the page (tabs rail, sidebar, code block),
+     --input for a control's own outline, --border-soft for a divider inside
+     an already-elevated surface, where a full-strength line reads as clutter. */
   --border: oklch(0.885 0.008 254);
-  --input: oklch(0.885 0.008 254);
+  --input: oklch(0.915 0.007 254);
+  --border-soft: oklch(0.935 0.006 254);
   --ring: oklch(0.646 0.142 253.92);
 
   /* Tinted surface for code blocks, callouts and inset panels. */
@@ -80,8 +85,12 @@
   --accent: oklch(0.27 0.016 254);
   --accent-foreground: oklch(0.96 0.006 254);
   --destructive: oklch(0.704 0.191 22.216);
+  /* Same three steps as :root. In dark mode the input also carries
+     `dark:bg-input/30`, so the control stays identifiable by its fill and the
+     outline can afford to sit below --border. */
   --border: oklch(1 0 0 / 13%);
-  --input: oklch(1 0 0 / 17%);
+  --input: oklch(1 0 0 / 12%);
+  --border-soft: oklch(1 0 0 / 8%);
   --ring: oklch(0.707 0.165 254.624 / 60%);
 
   --surface-soft: oklch(0.22 0.02 254);
@@ -123,6 +132,7 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-border: var(--border);
+  --color-border-soft: var(--border-soft);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-surface-soft: var(--surface-soft);

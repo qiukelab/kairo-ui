@@ -45,6 +45,15 @@ import {
 | `CardContent`     | The body. Horizontal padding only.                                                                 |
 | `CardFooter`      | Actions. Flex row.                                                                                 |
 
+## Props
+
+| Prop   | Type            | Default   |
+| ------ | --------------- | --------- |
+| `size` | `default \| sm` | `default` |
+
+`size` is mirrored to the DOM as `data-size`, so a parent can style against it without prop
+drilling.
+
 ## Elevation, not a border
 
 A card has no border. It lifts off the page with `shadow-card`, a token deliberately kept light
@@ -74,6 +83,34 @@ Raise a card on hover with the matching step:
 <Card className="transition-shadow hover:shadow-card-hover">…</Card>
 ```
 
+## Spacing
+
+Every inset on a card — the vertical padding, the gap between sections, the horizontal padding
+on each slot — comes from one custom property that `Card` declares on itself:
+
+```css
+--card-spacing: --spacing(6); /* size="default" */
+--card-spacing: --spacing(4); /* size="sm" */
+```
+
+Slots read it as `px-(--card-spacing)` rather than `px-6`. That indirection is what makes the
+inset a value your _content_ can reach as well, which is the whole basis of
+[edge-to-edge content](#edge-to-edge-content) below — a number hard-coded as `-mx-6` would
+silently be wrong on a small card.
+
+Override it for one card without touching the component:
+
+```tsx
+<Card className="[--card-spacing:--spacing(8)]">…</Card>
+```
+
+## Size
+
+<ComponentPreview name="card-sm-demo" />
+
+`size="sm"` moves the whole spacing system down one step. Nothing else changes — the type scale,
+the radius and the elevation are the same, so a small card still reads as the same object.
+
 ## Dividers
 
 `CardHeader` and `CardFooter` react to a `border-b` or `border-t` on themselves and add the
@@ -84,8 +121,74 @@ padding a divider needs:
 <CardFooter className="border-t">…</CardFooter>
 ```
 
-The rule behind it is `[.border-b]:pb-6` — a self-referencing selector, so the spacing appears
-only when the border does. There is no `divided` prop to remember.
+The rule behind it is `[.border-b]:pb-(--card-spacing)` — a self-referencing selector, so the
+spacing appears only when the border does. There is no `divided` prop to remember.
+
+Those dividers draw in `--border-soft`, one step lighter than the `--border` used for page-level
+structure. A card is already separated from the page by its elevation, so a line inside it only
+has to group things, not to do the separating — at full strength it reads as clutter.
+
+| Token           | Job                                                     |
+| --------------- | ------------------------------------------------------- |
+| `--border`      | Page structure: the tabs rail, the sidebar, code blocks |
+| `--input`       | A control's own outline                                 |
+| `--border-soft` | A divider inside an already-elevated surface            |
+
+The slots carry `border-border-soft` unconditionally. Border-width is `0` by default, so the
+colour lies dormant until you add `border-b`. If you want the full-strength line back, say so and
+`tailwind-merge` lets you win:
+
+```tsx
+<CardHeader className="border-b border-border">…</CardHeader>
+```
+
+## Login form
+
+<ComponentPreview name="card-login-demo" />
+
+`CardAction` holds the sign-up link; the fields come from [Field](/docs/components/field), so the
+label/input association and the error wiring are handled for you. `FieldLabel` reads its
+`htmlFor` from context rather than from its position, which is why it can sit inside a
+`flex justify-between` row next to "Forgot your password?" without losing the link to its input.
+
+## Edge-to-edge content
+
+<ComponentPreview name="card-edge-to-edge-demo" />
+
+Cancel the inset with a negative margin of the same size, and the content runs to both edges
+while still lining up with everything above it:
+
+```tsx
+<CardContent className="-mx-(--card-spacing) -mb-(--card-spacing)">
+  <div className="border-y border-border-soft px-(--card-spacing) py-4">…</div>
+</CardContent>
+```
+
+`-mb-(--card-spacing)` is the second half of the trick: without it the card's own
+`gap-(--card-spacing)` leaves a band between the section and the footer, and the hairline stops
+reading as the boundary between them. The footer then asks for its top padding directly with
+`pt-(--card-spacing)`, since it has no `border-t` to trigger the automatic rule.
+
+## Image
+
+<ComponentPreview name="card-image-demo" />
+
+An image goes before `CardHeader`, on a card that has given up its top inset:
+
+```tsx
+<Card className="overflow-hidden pt-0">
+  <img src="/your-image.jpg" alt="" className="aspect-video w-full object-cover" />
+  <CardHeader>…</CardHeader>
+</Card>
+```
+
+`pt-0` lets the image start at the very top and `overflow-hidden` clips it to the card's radius.
+Give the image a fixed aspect ratio so the card does not reflow as it loads.
+
+<Callout>
+  The demo points at `/placeholder.svg`, an asset of this docs site. Copying the code gives you a
+  broken image until you swap the `src` for your own.
+</Callout>
 
 ## CardAction
 

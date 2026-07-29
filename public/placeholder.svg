@@ -1,0 +1,18 @@
+<!--
+  Stand-in image for the Card docs. Fixed hex rather than design tokens on
+  purpose: loaded through <img>, an SVG is a separate document with no access to
+  the page's custom properties, and the site's dark mode is class-based, so a
+  prefers-color-scheme rule inside here would not follow the theme toggle
+  either. A mid-neutral that is legible on both themes is the honest answer.
+
+  Decorative — the <img> that uses it carries alt="", so this file deliberately
+  declares no role or accessible name of its own.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+  <rect width="1200" height="675" fill="#3f434b" />
+  <g fill="none" stroke="#6b7079" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="430" y="238" width="340" height="240" rx="20" />
+    <circle cx="516" cy="316" r="26" />
+    <path d="M446 430l104-96 82 78 62-48 60 56" />
+  </g>
+</svg>
