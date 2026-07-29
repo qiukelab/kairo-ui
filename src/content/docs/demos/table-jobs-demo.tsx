@@ -72,7 +72,12 @@ export default function TableJobsDemo() {
         </Button>
       </div>
 
-      <Table>
+      {/* A floor, because this table has to scroll either way. Without one the
+          browser squeezes every column to its longest word to postpone the
+          scrollbar, and then still shows it — the title breaks over six lines
+          and nothing is gained. Set the width the columns need and let the
+          container scroll to it. */}
+      <Table className="min-w-[58rem]">
         <TableHeader className="bg-surface-soft">
           <TableRow>
             <TableHead>Job</TableHead>

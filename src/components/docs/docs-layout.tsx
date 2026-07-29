@@ -16,8 +16,11 @@ import { SiteHeader } from '@/components/layout/site-header'
  * run the full width would be the same mistake as zooming: more pixels used,
  * harder to read.
  *
- * That slack is not wasted: a `wide` ComponentPreview reaches into it, which is
- * how a seven-column table gets room without the prose following it out.
+ * Nothing reaches into that slack, deliberately. A preview that broke out of
+ * the column was tried and removed: it made every example a different width
+ * from the paragraph explaining it, and the reader's eye had to re-find the
+ * left edge on each one. A table too wide for the column scrolls inside its
+ * own container instead — see `Table`.
  */
 export function DocsLayout({
   children,

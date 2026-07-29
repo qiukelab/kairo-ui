@@ -6,13 +6,12 @@
   different styling: `role="switch"`, no third state, and no Save button implied. `switch.mdx`
   spells out which to reach for, because picking by looks is how a form ends up with toggles that
   quietly need saving.
-- **`ComponentPreview` gains `wide`**, letting a preview reach past the 640px reading column into
-  the slack either side of it. The breakout values come from measuring the space between the
-  column and the rails — 65px at `xl`, 161px at `2xl`, 353px at 1920 — and every one stays under
-  it, so a preview can never reach the sidebar or the table of contents.
 - Three Table examples: a **rounded, bordered** frame; a **card with a toolbar**, a tinted
   column, per-row switches and named row actions; and the same shape holding an **empty state**.
   The first two demos also stop being capped at `max-w-lg` and now fill their pane.
+- Every preview is the width of the reading column. The wide examples scroll sideways inside
+  their frame rather than breaking out of it — which is the same thing `Table` does on a phone,
+  so the docs demonstrate the behaviour instead of designing around it.
 
 Two things the new examples document rather than merely show. A tinted column is a class on the
 header _and_ on every cell beneath it — HTML has no column to style, only cells that line up. And

@@ -48,6 +48,9 @@ its columns, and no amount of wrapping changes that. Leaving the overflow to the
 every caller eventually forgets, and a column falls off the right edge on a phone with nothing to
 suggest it was ever there. Wrapping here makes the failure mode a scrollbar.
 
+The wide examples further down are not given extra room to fit — they scroll sideways in their
+frame, which is what they would do in a narrow layout too.
+
 ## Two things it does for accessibility
 
 **`TableHead` sets `scope="col"` for you.** That attribute is what ties a header to the cells
@@ -114,7 +117,7 @@ and the fill does not.
 
 ## In a card, with a toolbar
 
-<ComponentPreview name="table-jobs-demo" wide />
+<ComponentPreview name="table-jobs-demo" />
 
 A table rarely appears alone. Put the title, the count and the primary action in a row above it,
 inside the same bordered wrapper, and the whole thing reads as one object.
@@ -147,7 +150,7 @@ staging a value for a Save button.
 
 ## With a header and an empty state
 
-<ComponentPreview name="table-orders-demo" wide />
+<ComponentPreview name="table-orders-demo" />
 
 The same shape with nothing in it. The empty state goes in one cell spanning every column, so the
 header row survives and the reader can still see what the table _would_ contain.

@@ -37,32 +37,7 @@ function trimSource(source: string) {
     .trim()
 }
 
-/**
- * How far a `wide` preview reaches past the reading column, per side.
- *
- * The prose column is 640px centred in a much wider `main`, and these claim
- * some of that slack. Every value is under the space actually measured between
- * the column and the rails — 65px at xl, 161px at 2xl, 353px at 1920 — so the
- * preview can never reach the sidebar or the table of contents. Below xl the
- * TOC is hidden and the column is already tight, so nothing happens and the
- * table's own `overflow-x-auto` does the work instead.
- *
- * These are tied to the rail widths in docs-layout. If those change, so must
- * these — which is why the browser check measures the remaining gap rather
- * than looking at a screenshot.
- */
-const WIDE = '-mx-10 2xl:-mx-32 3xl:-mx-72'
-
-export function ComponentPreview({
-  name,
-  className,
-  wide = false,
-}: {
-  name: string
-  className?: string
-  /** Let the preview reach past the reading column. For tables, mostly. */
-  wide?: boolean
-}) {
+export function ComponentPreview({ name, className }: { name: string; className?: string }) {
   const Demo = demoComponents[demoPath(name)]?.default
   const source = demoSources[demoPath(name)]
 
@@ -77,9 +52,7 @@ export function ComponentPreview({
   const code = trimSource(source)
 
   return (
-    // The breakout is on the whole block, not just the preview pane, so the
-    // tab rail and the code panel stay aligned with the frame above them.
-    <Tabs defaultValue="preview" className={cn('my-6 gap-3', wide && WIDE, className)}>
+    <Tabs defaultValue="preview" className={cn('my-6 gap-3', className)}>
       <TabsList>
         <TabsTrigger value="preview">Preview</TabsTrigger>
         <TabsTrigger value="code">Code</TabsTrigger>
