@@ -1,0 +1,114 @@
+<ComponentPreview name="drawer-demo" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add drawer
+```
+
+Pulls in [vaul](https://vaul.emilkowal.ski), which owns the drag gesture and the snap behaviour.
+
+## Usage
+
+```tsx
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer'
+```
+
+```tsx
+<Drawer>
+  <DrawerTrigger asChild>
+    <Button variant="outline">Edit profile</Button>
+  </DrawerTrigger>
+  <DrawerContent>
+    <DrawerHeader>
+      <DrawerTitle>Edit profile</DrawerTitle>
+      <DrawerDescription>Make changes and save when you are done.</DrawerDescription>
+    </DrawerHeader>
+    <DrawerFooter>
+      <DrawerClose asChild>
+        <Button variant="outline">Cancel</Button>
+      </DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>
+```
+
+## Drawer or Sheet?
+
+Both slide in from an edge, so the overlap is the obvious question.
+
+|                  | Sheet                         | Drawer                        |
+| ---------------- | ----------------------------- | ----------------------------- |
+| Built on         | Radix Dialog                  | vaul                          |
+| Dismissed by     | Overlay, Escape, close button | All of those **and** dragging |
+| Feels right on   | Desktop                       | Touch                         |
+| Extra dependency | None                          | `vaul`                        |
+
+The difference is the gesture, not the direction. Dragging a panel away is how a phone works and
+is close to meaningless with a mouse, so: **Sheet on desktop, Drawer on touch.** Picking one per
+breakpoint and rendering both is a reasonable pattern; shipping both to everyone is not.
+
+If you do not need the drag, you do not need this component — and you do not need the dependency.
+`kairo-ui add sheet` installs it; it has no page of its own yet, so this table is the comparison.
+
+## Direction
+
+```tsx
+<Drawer direction="right">
+```
+
+`bottom` (the default), `top`, `left` or `right`. The styling follows automatically: vaul stamps
+`data-vaul-drawer-direction` on the content and one set of classes covers all four, so changing
+the prop cannot leave the appearance behind.
+
+The grab handle appears only on `bottom`, where a vertical drag is the natural gesture.
+
+## The drag is not an accessibility route
+
+The handle is `aria-hidden`, and deliberately so: dragging is a pointer gesture with no keyboard
+equivalent, and announcing a control nobody can operate by keyboard is worse than announcing
+nothing.
+
+That makes `DrawerClose` and Escape load-bearing rather than optional. A drawer whose only exit is
+the drag is a trap.
+
+```tsx
+<DrawerFooter>
+  <Button>Save changes</Button>
+  <DrawerClose asChild>
+    <Button variant="outline">Cancel</Button>
+  </DrawerClose>
+</DrawerFooter>
+```
+
+## Name it
+
+`DrawerTitle` is the drawer's accessible name and `DrawerDescription` its description. Without a
+title it is announced as "dialog", exactly as with [Dialog](/docs/components/dialog). If the title
+should not be visible, keep it and add `className="sr-only"` — do not remove it.
+
+## Anatomy
+
+| Slot            | Role                                        |
+| --------------- | ------------------------------------------- |
+| `Drawer`        | Root. `direction`, `open`, `onOpenChange`   |
+| `DrawerTrigger` | Use `asChild` with a real button            |
+| `DrawerContent` | The panel, its overlay, and the grab handle |
+| `DrawerHeader`  | Title and description                       |
+| `DrawerFooter`  | Actions, pushed to the bottom               |
+| `DrawerClose`   | Dismisses. The keyboard's route out         |
+
+<Callout>
+  Content taller than the panel scrolls, but vaul has to distinguish a scroll from a drag. Keep the
+  scrollable region inside `DrawerContent` rather than making the content itself the scroller, or a
+  downward swipe near the top will close the drawer instead of scrolling it.
+</Callout>

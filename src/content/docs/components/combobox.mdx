@@ -1,0 +1,73 @@
+<ComponentPreview name="combobox-demo" />
+
+## This page is a recipe, not a component
+
+There is no `kairo-ui add combobox`. A combobox is a [Popover](/docs/components/popover) holding a
+[Command](/docs/components/command), and the interesting part is how they are wired — which is
+short enough to copy and different enough per use that a component would only get in the way.
+
+```bash
+npx kairo-ui@latest add popover command button
+```
+
+## Usage
+
+```tsx
+<Popover open={open} onOpenChange={setOpen}>
+  <PopoverTrigger asChild>
+    <Button variant="outline" role="combobox" aria-expanded={open}>
+      {selected ? selected.label : 'Select a framework'}
+      <ChevronsUpDownIcon />
+    </Button>
+  </PopoverTrigger>
+  <PopoverContent className="w-56 p-0">
+    <Command>
+      <CommandInput placeholder="Search framework..." />
+      <CommandList>
+        <CommandEmpty>No framework found.</CommandEmpty>
+        <CommandGroup>{/* items */}</CommandGroup>
+      </CommandList>
+    </Command>
+  </PopoverContent>
+</Popover>
+```
+
+## Three details that matter
+
+**`role="combobox"` and `aria-expanded` go on the trigger.** Without them it is announced as a
+button that happens to open something, and the reader is never told a list exists or whether it is
+currently showing. The Button is otherwise unchanged.
+
+**`p-0` on the `PopoverContent`.** The Command supplies its own padding; leaving the popover's
+gives a double inset and a search field that does not reach the edges.
+
+**Selecting the current value clears it.** So the control can be emptied without a separate
+"None" row:
+
+```tsx
+onSelect={() => {
+  setValue(framework.value === value ? '' : framework.value)
+  setOpen(false)
+}}
+```
+
+## When not to use one
+
+A combobox is a select with a search box. That search box earns its place at maybe twenty
+options; below that it is a control the reader has to interact with twice to do what a
+[Select](/docs/components/select) does in one.
+
+| Options                              | Use                                                    |
+| ------------------------------------ | ------------------------------------------------------ |
+| A handful                            | [Select](/docs/components/select)                      |
+| Enough to scroll                     | Combobox                                               |
+| More than you can send to the client | Combobox with a server-side search, filtering disabled |
+
+For the last case, set `shouldFilter={false}` on `Command` and drive the list from your query —
+otherwise cmdk filters your already-filtered results a second time, locally, and hides matches
+the server just found.
+
+<Callout>
+  The trigger's visible text is the chosen value, which is not a name. Label it through
+  [Field](/docs/components/field) or with `aria-label`, exactly as with Select.
+</Callout>

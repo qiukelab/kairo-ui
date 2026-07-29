@@ -1,0 +1,103 @@
+<ComponentPreview name="command-demo" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add command
+```
+
+## Usage
+
+```tsx
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandShortcut,
+} from '@/components/ui/command'
+```
+
+```tsx
+<Command>
+  <CommandInput placeholder="Type a command or search..." />
+  <CommandList>
+    <CommandEmpty>No results found.</CommandEmpty>
+    <CommandGroup heading="Navigation">
+      <CommandItem>
+        <HouseIcon />
+        Home
+        <CommandShortcut>⌘H</CommandShortcut>
+      </CommandItem>
+    </CommandGroup>
+  </CommandList>
+</Command>
+```
+
+Built on [cmdk](https://cmdk.paco.me), which owns the filtering and the keyboard model.
+
+## As a dialog
+
+<ComponentPreview name="command-dialog-demo" />
+
+`CommandDialog` supplies two things every palette needs and most forget:
+
+```tsx
+<CommandDialog open={open} onOpenChange={setOpen} title="Jump to" description="Search for a page.">
+```
+
+The title and description are visually hidden but **not optional** — a dialog with no accessible
+name is announced as "dialog" and nothing more, and a palette that appears out of nowhere is
+exactly when someone needs to be told what opened and how it is driven. They are props with
+working defaults rather than something each caller must remember.
+
+There is no close button, deliberately. Escape closes it, and a palette with an X in the corner
+is a palette nobody will use twice.
+
+**This site's own ⌘K uses it** — `docs-search.tsx` is the same component, so what you see in the
+header is what these examples produce.
+
+## Filter on what the reader can see
+
+`CommandItem` uses its text content for matching unless you pass `value`. When you do pass one,
+keep it to what is visible:
+
+```tsx
+{/* Wrong: matches on a description nobody can see */}
+<CommandItem value={`${item.title} ${item.description}`}>
+
+{/* Right */}
+<CommandItem value={`${group.title} ${item.title}`}>
+```
+
+cmdk scores fuzzy subsequences, so hidden text makes items win on characters the reader cannot
+account for. In this site's search, folding the description in ranked "kairo.json" above
+"Tooltip" for the query `tool` — an inexplicable result unless you knew the descriptions were
+being searched.
+
+## Highlight is not hover
+
+Items style from `data-selected`, which cmdk sets for both the pointer and the arrow keys.
+Restyle them with `hover:` and keyboard navigation stops showing where it is — the palette still
+works, it just becomes unusable without a mouse.
+
+## Shortcuts are decorative
+
+`CommandShortcut` renders a keystroke; **it does not bind one.** Your application still has to
+listen. It is `aria-hidden`, because "Home ⌘H" announced as one label is worse than "Home".
+
+## Anatomy
+
+| Slot               | Role                                                              |
+| ------------------ | ----------------------------------------------------------------- |
+| `Command`          | Root. `loop` wraps arrow-key navigation at the ends               |
+| `CommandDialog`    | The palette form, on our `Dialog`. Supplies the sr-only name      |
+| `CommandInput`     | The query field, with its own search icon                         |
+| `CommandList`      | Scroll region. `overscroll-contain`, so the page behind stays put |
+| `CommandEmpty`     | Mounted only when nothing matches                                 |
+| `CommandGroup`     | `heading` labels a section                                        |
+| `CommandItem`      | A row. `onSelect` fires on click and on Enter                     |
+| `CommandSeparator` | A hairline between groups                                         |
+| `CommandShortcut`  | Decorative keystroke text                                         |

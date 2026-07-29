@@ -1,0 +1,87 @@
+<ComponentPreview name="hover-card-demo" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add hover-card
+```
+
+## Usage
+
+```tsx
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
+```
+
+```tsx
+<HoverCard>
+  <HoverCardTrigger asChild>
+    <a href="/people/anong">@anong</a>
+  </HoverCardTrigger>
+  <HoverCardContent>{/* the preview */}</HoverCardContent>
+</HoverCard>
+```
+
+## It is supplementary, always
+
+There is no hover on a touch screen. A hover card is therefore invisible to a large share of your
+readers, and the only honest way to use one is as a shortcut to something they can reach another
+way.
+
+That gives one rule: **the trigger must go somewhere.** A link previewing a profile is right,
+because tapping it opens the profile. A bare `span` that only reveals its content on hover is a
+dead end on a phone.
+
+```tsx
+{
+  /* Wrong: the information exists nowhere else */
+}
+;<HoverCardTrigger asChild>
+  <span>Pricing details</span>
+</HoverCardTrigger>
+
+{
+  /* Right: the card is a preview of where the link goes */
+}
+;<HoverCardTrigger asChild>
+  <a href="/pricing">Pricing</a>
+</HoverCardTrigger>
+```
+
+It opens on keyboard focus as well as hover, so a keyboard user does get it — but they still need
+the link to work.
+
+## Not a tooltip
+
+|              | [Tooltip](/docs/components/tooltip) | Hover Card                        |
+| ------------ | ----------------------------------- | --------------------------------- |
+| Holds        | A few words                         | A block: avatar, text, metadata   |
+| Announced as | The trigger's description           | Ordinary content                  |
+| Delay        | Immediate                           | ~200ms, so it does not flash past |
+
+A tooltip's text becomes the trigger's accessible description. A hover card's does not — it is a
+region of content, which is why it can hold structure and why it must not hold the only copy of
+anything.
+
+## Never put a control inside
+
+The card closes when the pointer leaves the trigger. Radix keeps it open while the pointer travels
+across the gap, but a button in there is still a target that can vanish mid-reach, and it is not
+in the tab order on the way to. If it needs clicking, use a [Popover](/docs/components/popover).
+
+## Props
+
+| Prop         | Type                     | Default  | On                 |
+| ------------ | ------------------------ | -------- | ------------------ |
+| `openDelay`  | `number`                 | `200`    | `HoverCard`        |
+| `closeDelay` | `number`                 | `150`    | `HoverCard`        |
+| `align`      | `start \| center \| end` | `center` | `HoverCardContent` |
+| `sideOffset` | `number`                 | `8`      | `HoverCardContent` |
+
+The open delay is deliberate: with none, sweeping the pointer across a paragraph of links flashes
+a card for each one.
+
+<Callout>
+  Respect `prefers-reduced-motion`. The site's `globals.css` already collapses these animations
+  globally, so nothing extra is needed here — but a card that scales into view is exactly the kind
+  of motion that setting exists for.
+</Callout>

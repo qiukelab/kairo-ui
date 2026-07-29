@@ -154,6 +154,126 @@
       ]
     },
     {
+      "name": "table",
+      "type": "registry:ui",
+      "title": "Table",
+      "description": "Rows, headers and a footer, with a scroll container of its own.",
+      "dependencies": [],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "src/components/ui/table.tsx",
+          "target": "ui/table.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "title": "Checkbox",
+      "description": "A three-state checkbox: on, off, and indeterminate.",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "src/components/ui/checkbox.tsx",
+          "target": "ui/checkbox.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "select",
+      "type": "registry:ui",
+      "title": "Select",
+      "description": "A listbox that produces a value.",
+      "dependencies": ["radix-ui", "lucide-react", "tw-animate-css"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "src/components/ui/select.tsx",
+          "target": "ui/select.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "popover",
+      "type": "registry:ui",
+      "title": "Popover",
+      "description": "A panel of interactive content anchored to a trigger.",
+      "dependencies": ["radix-ui", "tw-animate-css"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "src/components/ui/popover.tsx",
+          "target": "ui/popover.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "hover-card",
+      "type": "registry:ui",
+      "title": "Hover Card",
+      "description": "A preview of what a link leads to.",
+      "dependencies": ["radix-ui", "tw-animate-css"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "src/components/ui/hover-card.tsx",
+          "target": "ui/hover-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "type": "registry:ui",
+      "title": "Empty",
+      "description": "The state a list reaches when it holds nothing.",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "src/components/ui/empty.tsx",
+          "target": "ui/empty.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "command",
+      "type": "registry:ui",
+      "title": "Command",
+      "description": "A searchable command palette, on cmdk.",
+      "dependencies": ["cmdk", "lucide-react"],
+      "registryDependencies": ["dialog", "utils"],
+      "files": [
+        {
+          "path": "src/components/ui/command.tsx",
+          "target": "ui/command.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "drawer",
+      "type": "registry:ui",
+      "title": "Drawer",
+      "description": "A panel that slides in and can be dragged away.",
+      "dependencies": ["vaul", "tw-animate-css"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "src/components/ui/drawer.tsx",
+          "target": "ui/drawer.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "button",
       "type": "registry:ui",
       "title": "Button",

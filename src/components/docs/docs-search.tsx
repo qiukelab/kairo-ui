@@ -1,9 +1,15 @@
-import { Command } from 'cmdk'
 import { FileTextIcon, SearchIcon } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
+import {
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
 import { docsNav } from '@/content/docs/nav'
 import { cn } from '@/lib/utils'
 
@@ -52,53 +58,38 @@ export function DocsSearch({ className }: { className?: string }) {
         </kbd>
       </button>
 
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent showCloseButton={false} className="gap-0 overflow-hidden p-0">
-          <DialogTitle className="sr-only">Search documentation</DialogTitle>
-          <DialogDescription className="sr-only">
-            Find a page by name. Use the arrow keys to move and Enter to open.
-          </DialogDescription>
+      <CommandDialog
+        open={open}
+        onOpenChange={setOpen}
+        title="Search documentation"
+        description="Find a page by name. Use the arrow keys to move and Enter to open."
+      >
+        <CommandInput placeholder="Search documentation..." />
 
-          <Command
-            loop
-            className="[&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-2 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground"
-          >
-            <div className="flex items-center gap-2 border-b border-border px-3">
-              <SearchIcon className="size-4 shrink-0 text-muted-foreground" aria-hidden />
-              <Command.Input
-                placeholder="Search documentation..."
-                className="h-11 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-              />
-            </div>
+        <CommandList>
+          <CommandEmpty>No results found.</CommandEmpty>
 
-            <Command.List className="max-h-80 overflow-y-auto overscroll-contain p-1">
-              <Command.Empty className="py-8 text-center text-sm text-muted-foreground">
-                No results found.
-              </Command.Empty>
-
-              {docsNav.map((group) => (
-                <Command.Group key={group.title} heading={group.title}>
-                  {group.items.map((item) => (
-                    <Command.Item
-                      key={item.href}
-                      // Group and title only. cmdk scores fuzzy subsequences,
-                      // so folding the description in here lets an item win on
-                      // text the reader cannot see — typing "tool" ranked
-                      // "kairo.json" above "Tooltip".
-                      value={`${group.title} ${item.title}`}
-                      onSelect={() => go(item.href)}
-                      className="flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm outline-none select-none data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground"
-                    >
-                      <FileTextIcon className="size-4 shrink-0 text-muted-foreground" aria-hidden />
-                      {item.title}
-                    </Command.Item>
-                  ))}
-                </Command.Group>
+          {docsNav.map((group) => (
+            <CommandGroup key={group.title} heading={group.title}>
+              {group.items.map((item) => (
+                <CommandItem
+                  key={item.href}
+                  // Group and title only. cmdk scores fuzzy subsequences, so
+                  // folding the description in here lets an item win on text
+                  // the reader cannot see — typing "tool" ranked "kairo.json"
+                  // above "Tooltip".
+                  value={`${group.title} ${item.title}`}
+                  onSelect={() => go(item.href)}
+                  className="cursor-pointer"
+                >
+                  <FileTextIcon aria-hidden />
+                  {item.title}
+                </CommandItem>
               ))}
-            </Command.List>
-          </Command>
-        </DialogContent>
-      </Dialog>
+            </CommandGroup>
+          ))}
+        </CommandList>
+      </CommandDialog>
     </>
   )
 }

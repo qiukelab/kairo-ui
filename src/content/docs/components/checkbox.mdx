@@ -1,0 +1,87 @@
+<ComponentPreview name="checkbox-demo" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add checkbox
+```
+
+## Usage
+
+```tsx
+import { Checkbox } from '@/components/ui/checkbox'
+```
+
+```tsx
+<Checkbox id="terms" />
+<Label htmlFor="terms">Accept terms and conditions</Label>
+```
+
+## It is a button, not an input
+
+Radix renders a `button` with `role="checkbox"`, which is why wrapping it in a `<label>` does not
+associate anything. Use `htmlFor` and an `id`, or pass `aria-label` for a checkbox with no visible
+text — a row-selection box in a table, say.
+
+```tsx
+{/* No name: announced as "checkbox", nothing more */}
+<Checkbox />
+
+{/* Named */}
+<Checkbox id="terms" /> <Label htmlFor="terms">Accept terms</Label>
+<Checkbox aria-label="Select this row" />
+```
+
+Because it is not an `input`, it also submits nothing. Inside a form, either drive it from state
+or render a hidden input alongside it.
+
+## Three states
+
+<ComponentPreview name="checkbox-indeterminate-demo" />
+
+`checked` takes `true`, `false` **or** `"indeterminate"`, which Radix reports as
+`aria-checked="mixed"`.
+
+That third state exists for the parent of a partial selection. With one of three permissions
+ticked, `true` claims all three are and `false` claims none is — both are wrong, and a reader who
+cannot see the box has no way to discover it. `indeterminate` renders its own minus glyph rather
+than a tick.
+
+```tsx
+const all = checked.length === scopes.length
+const parent = all ? true : checked.length > 0 ? 'indeterminate' : false
+```
+
+It is a _display_ state, not a third value the user can cycle to: clicking an indeterminate box
+resolves it, so decide there whether that means select-all or clear-all.
+
+## In a Field
+
+`Checkbox` works with [Field](/docs/components/field), but the orientation is the other way round
+from a text input — the control comes first and the label sits beside it:
+
+```tsx
+<Field orientation="horizontal">
+  <FieldControl>
+    <Checkbox />
+  </FieldControl>
+  <FieldLabel>Email me about new releases</FieldLabel>
+</Field>
+```
+
+## Props
+
+Everything Radix's checkbox takes, including:
+
+| Prop              | Type                                            | Notes                                         |
+| ----------------- | ----------------------------------------------- | --------------------------------------------- |
+| `checked`         | `boolean \| "indeterminate"`                    | Controlled                                    |
+| `defaultChecked`  | `boolean`                                       | Uncontrolled                                  |
+| `onCheckedChange` | `(checked: boolean \| "indeterminate") => void` | —                                             |
+| `disabled`        | `boolean`                                       | Also stops the keyboard, not just the pointer |
+
+<Callout>
+  A disabled checkbox is invisible to keyboard navigation, so a reader can miss that the option
+  exists at all. If the reason it is disabled matters, say it in nearby text rather than leaving the
+  greyed box to explain itself.
+</Callout>

@@ -1,0 +1,95 @@
+<ComponentPreview name="empty-demo" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add empty
+```
+
+## Usage
+
+```tsx
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from '@/components/ui/empty'
+```
+
+```tsx
+<Empty>
+  <EmptyHeader>
+    <EmptyMedia variant="icon">
+      <InboxIcon />
+    </EmptyMedia>
+    <EmptyTitle>No projects yet</EmptyTitle>
+    <EmptyDescription>Create your first project and it will show up here.</EmptyDescription>
+  </EmptyHeader>
+  <EmptyContent>
+    <Button size="sm">New project</Button>
+  </EmptyContent>
+</Empty>
+```
+
+## Three different nothings
+
+The most common mistake here is writing one empty state and using it for every case. They need
+different words and different actions:
+
+| State                      | Say                        | Offer                                        |
+| -------------------------- | -------------------------- | -------------------------------------------- |
+| Nothing created yet        | "No projects yet"          | The action that creates one                  |
+| Nothing matches the filter | "No results for _polaris_" | Clear the search                             |
+| Failed to load             | —                          | An [Alert](/docs/components/alert), not this |
+
+<ComponentPreview name="empty-search-demo" />
+
+Telling someone "No projects yet" when they have forty projects and a typo in the search box is
+worse than saying nothing — it suggests their data is gone.
+
+And a **failure** is not an empty state. An empty list is a normal, successful result; a request
+that errored has not produced a result at all. Use `Alert`, and offer a retry.
+
+## Inside a table
+
+<ComponentPreview name="table-empty-demo" />
+
+Put it in one cell spanning every column:
+
+```tsx
+<TableBody>
+  <TableRow className="hover:bg-transparent">
+    <TableCell colSpan={columns.length}>
+      <Empty>…</Empty>
+    </TableCell>
+  </TableRow>
+</TableBody>
+```
+
+Rendering it as a sibling of the table leaves a `tbody` with no rows, which is invalid and reads
+as a table containing nothing rather than as a message explaining why.
+
+## The icon is decorative
+
+`EmptyMedia` is `aria-hidden`. The title and description carry the meaning, and an announced icon
+would only repeat them — or worse, announce "inbox" before the sentence explaining what is
+missing.
+
+| `variant` | Renders                                                                  |
+| --------- | ------------------------------------------------------------------------ |
+| `default` | The glyph alone                                                          |
+| `icon`    | A tinted tile behind it, for a page-level state that needs more presence |
+
+## Anatomy
+
+| Slot               | Role                                                    |
+| ------------------ | ------------------------------------------------------- |
+| `Empty`            | The container. Centres everything                       |
+| `EmptyHeader`      | Groups media, title and description at a readable width |
+| `EmptyMedia`       | Decorative icon                                         |
+| `EmptyTitle`       | One short line naming what is absent                    |
+| `EmptyDescription` | Why, or what to do about it                             |
+| `EmptyContent`     | Actions. Keep it to the one that resolves the emptiness |

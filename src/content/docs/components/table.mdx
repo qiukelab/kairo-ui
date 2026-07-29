@@ -1,0 +1,115 @@
+<ComponentPreview name="table-demo" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add table
+```
+
+## Usage
+
+```tsx
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+```
+
+```tsx
+<Table>
+  <TableCaption>Invoices for the last quarter.</TableCaption>
+  <TableHeader>
+    <TableRow>
+      <TableHead>Invoice</TableHead>
+      <TableHead className="text-right">Amount</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell>INV-001</TableCell>
+      <TableCell className="text-right">$250.00</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+```
+
+## It brings its own scroll container
+
+`Table` renders a wrapper with `overflow-x-auto` around the `table` element.
+
+A table is the one thing on a page that genuinely cannot be made to fit — its width is the sum of
+its columns, and no amount of wrapping changes that. Leaving the overflow to the caller means
+every caller eventually forgets, and a column falls off the right edge on a phone with nothing to
+suggest it was ever there. Wrapping here makes the failure mode a scrollbar.
+
+## Two things it does for accessibility
+
+**`TableHead` sets `scope="col"` for you.** That attribute is what ties a header to the cells
+beneath it, so a screen reader can announce "Amount, $250.00" instead of just "$250.00". It is
+not inferred from position, and it is exactly the sort of thing that gets left out.
+
+**Prefer `TableCaption` to a heading beside the table.** A caption is associated with the table
+itself, so it is announced on arrival rather than only if someone happens to read the line above.
+
+```tsx
+{/* The table has no name of its own */}
+<h3>Invoices</h3>
+<Table>…</Table>
+
+{/* The name belongs to the table */}
+<Table>
+  <TableCaption>Invoices for the last quarter.</TableCaption>
+  …
+</Table>
+```
+
+## Empty states go inside the table
+
+<ComponentPreview name="table-empty-demo" />
+
+```tsx
+<TableBody>
+  <TableRow className="hover:bg-transparent">
+    <TableCell colSpan={columns.length}>
+      <Empty>…</Empty>
+    </TableCell>
+  </TableRow>
+</TableBody>
+```
+
+Rendering the empty state as a _sibling_ of the table leaves a `tbody` with no rows — invalid
+HTML, and announced as a table containing nothing rather than as a message. One cell spanning
+every column keeps the structure intact. See [Empty](/docs/components/empty).
+
+## Numbers
+
+Right-align them and use `tabular-nums`, so digits occupy equal width and the column reads as a
+column rather than as ragged text:
+
+```tsx
+<TableCell className="text-right tabular-nums">$250.00</TableCell>
+```
+
+## Anatomy
+
+| Slot           | Role                                           |
+| -------------- | ---------------------------------------------- |
+| `Table`        | The element, plus its scroll container         |
+| `TableCaption` | The table's accessible name. Rendered below it |
+| `TableHeader`  | `thead`                                        |
+| `TableBody`    | `tbody`. Drops the divider under the last row  |
+| `TableFooter`  | `tfoot`, for totals                            |
+| `TableRow`     | Hover and `data-state="selected"` styling      |
+| `TableHead`    | `th` with `scope="col"`                        |
+| `TableCell`    | `td`                                           |
+
+Rows divide in `--border-soft` and the header in `--border` — the frame is the structure, the
+rows inside only need grouping. See [Theming](/docs/theming).
+
+For sorting, filtering, selection and pagination, see [Data Table](/docs/components/data-table).
