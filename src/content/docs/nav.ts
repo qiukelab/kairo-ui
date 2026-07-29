@@ -78,6 +78,24 @@ export const docsNav: DocsNavGroup[] = [
         description: 'A text field wired to the focus and invalid-state tokens.',
       },
       {
+        title: 'Field',
+        href: '/docs/components/field',
+        description: 'Label, description and error around a control — wired up for you.',
+        label: 'New',
+      },
+      {
+        title: 'Input Group',
+        href: '/docs/components/input-group',
+        description: 'Icons, prefixes and buttons inside the input border.',
+        label: 'New',
+      },
+      {
+        title: 'Button Group',
+        href: '/docs/components/button-group',
+        description: 'Adjacent controls joined into a single unit.',
+        label: 'New',
+      },
+      {
         title: 'Dialog',
         href: '/docs/components/dialog',
         description: 'A modal window layered over the page, with focus trapping.',

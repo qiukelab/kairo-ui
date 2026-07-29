@@ -169,15 +169,24 @@
 }
 
 /* Tailwind v4 defaults bare `border`/`outline` utilities to currentColor;
-   restore the tokens so `border` means --border (not black) everywhere. */
-* {
-  box-sizing: border-box;
-  border-color: var(--border);
-  outline-color: var(--ring);
-}
+   restore the tokens so `border` means --border (not black) everywhere.
 
-body {
-  font-family: var(--font-sans);
-  background-color: var(--background);
-  color: var(--foreground);
+   MUST stay inside `@layer base`. Unlayered declarations act as a final layer
+   after every named one, so an unlayered `*` here outranks the entire
+   `utilities` layer despite losing on specificity — which silently kills every
+   border-colour utility in the library: `border-destructive`,
+   `focus-visible:border-ring`, `border-primary`. Layered, base < utilities, so
+   the reset supplies the default and a utility can still override it. */
+@layer base {
+  * {
+    box-sizing: border-box;
+    border-color: var(--border);
+    outline-color: var(--ring);
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--background);
+    color: var(--foreground);
+  }
 }

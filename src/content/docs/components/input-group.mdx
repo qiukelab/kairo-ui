@@ -1,0 +1,105 @@
+<ComponentPreview name="input-group-demo" align="start" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add input-group
+```
+
+## Usage
+
+```tsx
+import { InputGroup, InputGroupAddon, InputGroupText } from '@/components/ui/input-group'
+```
+
+```tsx
+<InputGroup>
+  <InputGroupAddon>
+    <InputGroupText>https://</InputGroupText>
+  </InputGroupAddon>
+  <Input placeholder="example.com" />
+  <InputGroupAddon align="end">
+    <InfoIcon aria-hidden />
+  </InputGroupAddon>
+</InputGroup>
+```
+
+## The input stays a plain Input
+
+There is no `InputGroupInput` to import. `InputGroup` strips the border, background, padding and
+focus ring from any `[data-slot=input]` inside it, so the input you compose is the same one you
+use everywhere else — the group just takes over its chrome.
+
+```css
+[&_[data-slot=input]]:border-0
+[&_[data-slot=input]]:shadow-none
+[&_[data-slot=input]]:focus-visible:ring-0
+```
+
+The border and the focus ring belong to the **group**, using `focus-within`. A ring on the inner
+input would draw a rectangle in the middle of the control, around the text but not around the
+addons.
+
+## Addons
+
+`InputGroupAddon` holds anything that sits beside the text. `align="end"` pushes it to the right
+with `ml-auto`.
+
+Addons are `pointer-events-none` by default, so clicking a decorative icon still focuses the
+input rather than swallowing the click. Buttons and links inside them get pointer events back
+automatically — nothing to remember for the common case, nothing broken in the interactive one.
+
+```tsx
+<InputGroupAddon align="end">
+  <Button variant="ghost" size="icon-xs" aria-label="Clear">
+    <XIcon />
+  </Button>
+</InputGroupAddon>
+```
+
+`InputGroupText` is the muted, non-selectable text used for prefixes and suffixes — `https://`,
+a currency symbol, a unit.
+
+## Invalid and disabled
+
+The group reacts to the input's own state rather than taking props of its own:
+
+```css
+has-[[aria-invalid=true]]:border-destructive
+has-[input:disabled]:opacity-60
+```
+
+So pairing it with [`Field`](/docs/components/field) works with no extra wiring — `invalid` on
+the field lands on the input, and the group picks it up from there.
+
+<Callout>
+  An addon is not a label. An icon inside the group tells a screen reader nothing, so the group
+  still needs a `FieldLabel` or an `aria-label` on the input.
+</Callout>
+
+## Inside a Field
+
+Put `InputGroup` where the control would go. `FieldControl` still wraps the input itself, not the
+group — the id and `aria-describedby` belong on the focusable element:
+
+```tsx
+<Field>
+  <FieldLabel>Website URL</FieldLabel>
+  <InputGroup>
+    <InputGroupAddon>
+      <InputGroupText>https://</InputGroupText>
+    </InputGroupAddon>
+    <FieldControl>
+      <Input placeholder="example.com" />
+    </FieldControl>
+  </InputGroup>
+</Field>
+```
+
+## API
+
+| Component         | Prop    | Type           | Default |
+| ----------------- | ------- | -------------- | ------- |
+| `InputGroupAddon` | `align` | `start \| end` | `start` |
+
+`InputGroup` and `InputGroupText` take native `div` and `span` attributes.

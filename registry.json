@@ -72,6 +72,58 @@
       ]
     },
     {
+      "name": "label",
+      "type": "registry:ui",
+      "title": "Label",
+      "description": "An accessible label for a form control.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils"],
+      "files": [
+        { "path": "src/components/ui/label.tsx", "target": "ui/label.tsx", "type": "registry:ui" }
+      ]
+    },
+    {
+      "name": "field",
+      "type": "registry:ui",
+      "title": "Field",
+      "description": "Label, description and error around a control — wired up for you.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "label"],
+      "files": [
+        { "path": "src/components/ui/field.tsx", "target": "ui/field.tsx", "type": "registry:ui" }
+      ]
+    },
+    {
+      "name": "input-group",
+      "type": "registry:ui",
+      "title": "Input Group",
+      "description": "Icons, prefixes and buttons inside the input border.",
+      "dependencies": [],
+      "registryDependencies": ["utils", "input"],
+      "files": [
+        {
+          "path": "src/components/ui/input-group.tsx",
+          "target": "ui/input-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "button-group",
+      "type": "registry:ui",
+      "title": "Button Group",
+      "description": "Adjacent controls joined into a single unit.",
+      "dependencies": [],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "src/components/ui/button-group.tsx",
+          "target": "ui/button-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "dialog",
       "type": "registry:ui",
       "title": "Dialog",

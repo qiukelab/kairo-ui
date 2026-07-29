@@ -6,7 +6,6 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
   return (
     <input
       type={type}
-      data-slot="input"
       className={cn(
         'flex h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none md:text-sm',
         'file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground',
@@ -18,6 +17,10 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
         className,
       )}
       {...props}
+      // After the spread on purpose: this is the element's identity and the
+      // hook InputGroup styles against. A wrapper that also sets `data-slot` —
+      // Field's Slot-based FieldControl did — would otherwise overwrite it.
+      data-slot="input"
     />
   )
 }

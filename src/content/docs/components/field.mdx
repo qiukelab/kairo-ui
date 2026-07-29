@@ -1,0 +1,150 @@
+<ComponentPreview name="input-field-demo" align="start" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add field
+```
+
+## Usage
+
+```tsx
+import {
+  Field,
+  FieldControl,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from '@/components/ui/field'
+```
+
+```tsx
+<Field invalid>
+  <FieldLabel>Email</FieldLabel>
+  <FieldControl>
+    <Input type="email" placeholder="name@example.com" />
+  </FieldControl>
+  <FieldDescription>We&rsquo;ll send updates to this address.</FieldDescription>
+  <FieldError>Enter a valid email address.</FieldError>
+</Field>
+```
+
+## What it wires for you
+
+There is no `id` in that example, and no `aria-*` attribute. `Field` generates one id per
+instance and distributes it:
+
+| Relationship                 | Handled by                                                                                    |
+| ---------------------------- | --------------------------------------------------------------------------------------------- |
+| `<label for>` ↔ `<input id>` | `FieldLabel` reads the id from context                                                        |
+| `aria-describedby`           | `Field` lists the ids of whichever of `FieldDescription` / `FieldError` are actually rendered |
+| `aria-invalid`               | `invalid` on `Field`                                                                          |
+| `disabled`, `required`       | the matching prop on `Field`                                                                  |
+
+This is the whole point of the component. Accessibility wiring that a developer has to remember
+is wiring that eventually goes missing — usually on the field added in a hurry.
+
+<Callout>
+  `aria-describedby` is built by looking at `Field`'s **direct** children. Wrap a `FieldDescription`
+  in another element and it stops being found, and the control loses its description silently. Keep
+  the parts as direct children, or set `aria-describedby` yourself.
+</Callout>
+
+## Anatomy
+
+| Part               | Role                                                                                              |
+| ------------------ | ------------------------------------------------------------------------------------------------- |
+| `Field`            | Container. Owns the ids and the `invalid` / `disabled` / `required` state.                        |
+| `FieldLabel`       | The label. Fills in `htmlFor`, turns destructive when invalid, and renders the required asterisk. |
+| `FieldControl`     | Injects the id and state onto the element it wraps.                                               |
+| `FieldDescription` | Helper text. Rendered only when it has content.                                                   |
+| `FieldError`       | Error text, `role="alert"`. Rendered only when it has content.                                    |
+| `FieldGroup`       | A grid that stacks fields; give it column classes to lay them out.                                |
+
+## FieldControl takes exactly one element
+
+`FieldControl` renders nothing of its own. It merges props onto its single child, which is what
+lets the control stay a plain `Input`:
+
+```tsx
+<FieldControl>
+  <Input type="email" />
+</FieldControl>
+```
+
+Two children, or a bare string, will throw. Anything that forwards props and a ref works —
+`Input`, `textarea`, `select`, your own component.
+
+Props set on the child win over the ones `Field` supplies, so a single control can opt out:
+
+```tsx
+{
+  /* Disabled even though the Field is not */
+}
+;<FieldControl>
+  <Input disabled />
+</FieldControl>
+```
+
+## Orientation
+
+`vertical` is the default. `horizontal` puts the label and control on one row, and pushes any
+description or error onto its own line beneath them.
+
+<ComponentPreview name="input-inline-demo" />
+
+```tsx
+<Field orientation="horizontal">…</Field>
+```
+
+## Disabled
+
+<ComponentPreview name="input-disabled-demo" align="start" />
+
+`disabled` on `Field` reaches the control, and dims the label and description through
+`group-data-[disabled=true]/field:`. Setting `disabled` on the input alone would grey the box and
+leave its label at full strength.
+
+## Invalid
+
+<ComponentPreview name="input-invalid-demo" align="start" />
+
+`invalid` sets `aria-invalid` on the control, turns the label destructive, and adds `FieldError`
+to `aria-describedby`. An error with no content renders nothing and is left out of
+`aria-describedby` — so a field that is not currently failing never points at an empty element.
+
+## Required
+
+<ComponentPreview name="input-required-demo" align="start" />
+
+## Groups and layout
+
+`FieldGroup` is a `grid gap-6`. To place fields side by side, hand it column classes:
+
+<ComponentPreview name="input-grid-demo" align="start" />
+
+```tsx
+<FieldGroup className="gap-4 sm:grid-cols-2">
+  <Field>…</Field>
+  <Field>…</Field>
+</FieldGroup>
+```
+
+## API
+
+### Field
+
+| Prop          | Type                     | Default    |
+| ------------- | ------------------------ | ---------- |
+| `orientation` | `vertical \| horizontal` | `vertical` |
+| `invalid`     | `boolean`                | `false`    |
+| `disabled`    | `boolean`                | `false`    |
+| `required`    | `boolean`                | `false`    |
+
+`data-orientation`, `data-invalid` and `data-disabled` are written to the DOM, so descendants can
+style off the field's state without prop drilling.
+
+### FieldLabel · FieldDescription · FieldError · FieldGroup
+
+Native attributes only. `FieldLabel` renders a Radix `Label`; the others render `div` or `p`.

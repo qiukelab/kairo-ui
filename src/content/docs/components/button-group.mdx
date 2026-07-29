@@ -1,0 +1,78 @@
+<ComponentPreview name="input-button-group-demo" align="start" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add button-group
+```
+
+## Usage
+
+```tsx
+import { ButtonGroup, ButtonGroupText } from '@/components/ui/button-group'
+```
+
+```tsx
+<ButtonGroup>
+  <Input type="search" placeholder="Type to search..." />
+  <Button type="submit" variant="outline">
+    Search
+  </Button>
+</ButtonGroup>
+```
+
+## How the seam works
+
+Two bordered controls placed next to each other give you a 2px line where their borders meet, and
+four rounded corners in the middle. `ButtonGroup` fixes both:
+
+```css
+[&>*:not(:first-child)]:-ml-px
+[&>*:not(:first-child)]:rounded-l-none
+[&>*:not(:last-child)]:rounded-r-none
+```
+
+Every child after the first is pulled back a pixel so the two borders overlap into one, and the
+inner corners are flattened. The result reads as a single control rather than two that happen to
+touch.
+
+A focused child is raised with `z-10`, because otherwise its neighbour's border paints over one
+edge of the focus ring.
+
+## Buttons only
+
+```tsx
+<ButtonGroup className="w-fit">
+  <Button variant="outline">Day</Button>
+  <Button variant="outline">Week</Button>
+  <Button variant="outline">Month</Button>
+</ButtonGroup>
+```
+
+`ButtonGroup` sets `role="group"`. For a set where exactly one option is active, that is not
+enough — use [`Tabs`](/docs/components/tabs) if it switches a panel, or radio inputs if it is a
+form value. A row of buttons cannot tell a screen reader which one is selected.
+
+## Static text
+
+`ButtonGroupText` is a non-interactive segment for a unit or a prefix:
+
+```tsx
+<ButtonGroup>
+  <Input type="number" placeholder="0" />
+  <ButtonGroupText>kg</ButtonGroupText>
+</ButtonGroup>
+```
+
+Reach for [`InputGroup`](/docs/components/input-group) instead when the text belongs _inside_ the
+input's border rather than in its own segment beside it.
+
+## Width
+
+`ButtonGroup` is `w-full` so an input inside it fills the row. Add `w-fit` when the group is a
+row of buttons that should size to its content.
+
+## API
+
+Both components take native attributes only. `ButtonGroup` renders a `div` with `role="group"`;
+`ButtonGroupText` renders a `span`.

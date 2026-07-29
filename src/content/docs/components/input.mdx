@@ -1,4 +1,6 @@
-<ComponentPreview name="input-demo" align="start" />
+## Basic
+
+<ComponentPreview name="input-demo" />
 
 ## Installation
 
@@ -16,42 +18,164 @@ import { Input } from '@/components/ui/input'
 <Input type="email" placeholder="you@example.com" />
 ```
 
-## Labels
+`Input` is a bare `<input>`. On its own it has no label, and a placeholder is not one — it
+disappears the moment someone types, taking the field's meaning with it. Everything below wraps
+it in [`Field`](/docs/components/field), which supplies the label and the wiring.
 
-`Input` renders a bare `input`. It has no built-in label, and a placeholder is not one — it
-disappears the moment someone types, taking the field's meaning with it.
+## Field
+
+Use `Field`, `FieldLabel` and `FieldDescription` to create an input with a label and a
+description.
+
+<ComponentPreview name="input-field-demo" align="start" />
 
 ```tsx
-<div className="grid gap-2">
-  <label htmlFor="email" className="text-sm font-medium">
-    Email
-  </label>
-  <Input id="email" type="email" />
-</div>
+<Field>
+  <FieldLabel>Username</FieldLabel>
+  <FieldControl>
+    <Input placeholder="Enter your username" />
+  </FieldControl>
+  <FieldDescription>Choose a unique username for your account.</FieldDescription>
+</Field>
 ```
 
-Where a visible label genuinely does not fit, use `aria-label`.
+No `id` appears anywhere. `Field` generates one, `FieldLabel` points `htmlFor` at it and
+`FieldControl` puts it on the input — so the label cannot come unstuck from its field.
 
-## Invalid state
+## Field Group
 
-Styling keys off `aria-invalid`, so the same attribute that tells assistive technology about
-the error also drives the red border and ring:
+Use `FieldGroup` to show multiple `Field` blocks and to build forms.
+
+<ComponentPreview name="input-field-group-demo" align="start" />
+
+## Disabled
+
+Pass `disabled` to `Field` rather than to the input. It reaches the control **and** dims the
+label and description, which a `disabled` on the input alone cannot do.
+
+<ComponentPreview name="input-disabled-demo" align="start" />
 
 ```tsx
-;<Input aria-invalid={Boolean(errors.email)} aria-describedby="email-error" />
-{
-  errors.email && (
-    <p id="email-error" className="text-sm text-destructive">
-      {errors.email}
-    </p>
-  )
-}
+<Field disabled>…</Field>
+```
+
+## Invalid
+
+Pass `invalid` to `Field`. It sets `aria-invalid` on the control — the same attribute that tells
+assistive technology about the error is what draws the red border — turns the label
+destructive, and adds the error to `aria-describedby`.
+
+<ComponentPreview name="input-invalid-demo" align="start" />
+
+```tsx
+<Field invalid>
+  <FieldLabel>Invalid Input</FieldLabel>
+  <FieldControl>
+    <Input defaultValue="Error" />
+  </FieldControl>
+  <FieldError>This field contains validation errors.</FieldError>
+</Field>
 ```
 
 <Callout>
-  Do not style errors with a className alone. A red border communicates nothing to a screen reader;
+  Never style an error with a class alone. A red border communicates nothing to a screen reader;
   `aria-invalid` is what makes the state perceivable, and here it is also what makes it visible.
 </Callout>
+
+## Required
+
+Pass `required` to `Field`. The control gets the native `required` attribute and the label grows
+an asterisk — marked `aria-hidden`, because `required` is already announced and "star" would only
+duplicate it.
+
+<ComponentPreview name="input-required-demo" align="start" />
+
+## File
+
+Use `type="file"` to create a file input. The button the browser renders inside it is styled
+through the `file:` variant.
+
+<ComponentPreview name="input-file-demo" align="start" />
+
+## Inline
+
+Use `Field` with `orientation="horizontal"` to lay the control out in a row. Pair it with a
+`Button` for a search field.
+
+<ComponentPreview name="input-inline-demo" />
+
+```tsx
+<Field orientation="horizontal">
+  <FieldLabel className="sr-only">Search</FieldLabel>
+  <FieldControl>
+    <Input type="search" placeholder="Search..." className="flex-1" />
+  </FieldControl>
+  <Button type="submit">Search</Button>
+</Field>
+```
+
+A description or error inside a horizontal field breaks onto its own line, so the row stays
+readable when validation fails.
+
+## Grid
+
+`FieldGroup` is a grid. Give it column classes to place fields side by side.
+
+<ComponentPreview name="input-grid-demo" align="start" />
+
+```tsx
+<FieldGroup className="gap-4 sm:grid-cols-2">
+  <Field>…</Field>
+  <Field>…</Field>
+</FieldGroup>
+```
+
+The columns only apply from `sm` up, so the fields stack on a phone rather than being squeezed
+into halves.
+
+## Badge
+
+`FieldLabel` is a flex row, so a [`Badge`](/docs/components/badge) can sit in it to flag a
+field.
+
+<ComponentPreview name="input-badge-demo" align="start" />
+
+```tsx
+<FieldLabel>
+  Webhook URL
+  <Badge variant="muted" size="sm" className="ml-auto">
+    Beta
+  </Badge>
+</FieldLabel>
+```
+
+## Input Group
+
+To put an icon, a prefix or a button **inside** the input's border, use
+[`InputGroup`](/docs/components/input-group).
+
+<ComponentPreview name="input-group-demo" align="start" />
+
+```tsx
+<InputGroup>
+  <InputGroupAddon>
+    <InputGroupText>https://</InputGroupText>
+  </InputGroupAddon>
+  <FieldControl>
+    <Input placeholder="example.com" />
+  </FieldControl>
+  <InputGroupAddon align="end">
+    <InfoIcon aria-hidden />
+  </InputGroupAddon>
+</InputGroup>
+```
+
+## Button Group
+
+To attach a button **beside** the input so the two read as one control, use
+[`ButtonGroup`](/docs/components/button-group).
+
+<ComponentPreview name="input-button-group-demo" align="start" />
 
 ## Sizing
 
@@ -63,24 +187,19 @@ The field is `h-9` and full-width. Constrain it from the parent rather than on t
 </div>
 ```
 
-Font size is `text-base` below `md` and `text-sm` above it. That is deliberate — iOS Safari
-zooms the viewport when a focused field is under 16px, and the jump is disorienting.
+Font size is `text-base` below `md` and `text-sm` above it. That is deliberate — iOS Safari zooms
+the viewport when a focused field is under 16px, and the jump is disorienting.
 
-## File inputs
+## API
 
-`type="file"` is styled through the `file:` variant:
+`Input` takes every native `input` attribute and adds nothing. Its states come from the DOM:
 
-```tsx
-<Input type="file" />
-```
+| State       | Driven by                |
+| ----------- | ------------------------ |
+| Focus       | `:focus-visible`         |
+| Disabled    | the `disabled` attribute |
+| Invalid     | `aria-invalid`           |
+| File button | the `file:` variant      |
 
-## Composition
-
-There is no `startIcon` prop. Wrap instead, so the padding stays yours to control:
-
-```tsx
-<div className="relative">
-  <SearchIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-  <Input className="pl-9" placeholder="Search" />
-</div>
-```
+Because there is no prop to learn, anything that works on a native input works here — `pattern`,
+`inputMode`, `autoComplete`, uncontrolled `defaultValue`, a `ref`.

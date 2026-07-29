@@ -1,6 +1,24 @@
 ## Unreleased
 
-A flatter house style for the three components that carry the most surface area.
+### Added — the form cluster
+
+- **Field** — `Field`, `FieldLabel`, `FieldControl`, `FieldDescription`, `FieldError` and
+  `FieldGroup`. `Field` generates one id per instance and distributes it, so `htmlFor` ↔ `id`,
+  `aria-describedby`, `aria-invalid`, `disabled` and `required` are all wired without the caller
+  writing an id or an `aria-*` attribute. `aria-describedby` is built from the parts that
+  actually rendered, so it never names a missing element.
+- **Label** — a Radix `Label` that dims itself from a disabled `Field`.
+- **InputGroup** — puts icons, prefixes and buttons inside the input's border. The nested input
+  stays a plain `Input`; the group strips its chrome and owns the focus ring via `focus-within`.
+- **ButtonGroup** — joins an input and a button into one control by collapsing the seam between
+  their borders.
+
+`input.mdx` is rewritten around these: the sections that told readers to hand-write a `<label>`
+or wrap an input in `div.relative` are gone, replaced by twelve worked examples.
+
+### A flatter house style
+
+The three components that carry the most surface area.
 
 ### Breaking
 
