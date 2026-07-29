@@ -1,0 +1,65 @@
+`kairo.json` sits at the root of your project and tells the CLI where your code lives. It is
+written by `kairo-ui init`, and read by every `add` after that.
+
+## Example
+
+```json title="kairo.json"
+{
+  "$schema": "https://kairo-ui.dev/schema.json",
+  "style": "default",
+  "tsx": true,
+  "tailwind": {
+    "css": "src/styles/globals.css"
+  },
+  "aliases": {
+    "components": "@/components",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "utils": "@/lib/utils",
+    "hooks": "@/hooks"
+  },
+  "iconLibrary": "lucide",
+  "registry": "https://kairo-ui.dev/r"
+}
+```
+
+## Fields
+
+| Field           | Type        | Description                                                                     |
+| --------------- | ----------- | ------------------------------------------------------------------------------- |
+| `style`         | `"default"` | Reserved. Only one style exists today.                                          |
+| `tsx`           | `boolean`   | Write `.tsx` files. `false` emits `.jsx` with the types stripped.               |
+| `tailwind.css`  | `string`    | Path to the stylesheet holding your `@theme` block. `init` appends tokens here. |
+| `aliases.ui`    | `string`    | Where `add` writes component files.                                             |
+| `aliases.utils` | `string`    | Import specifier rewritten into every component's `cn` import.                  |
+| `aliases.lib`   | `string`    | Where shared helpers land.                                                      |
+| `aliases.hooks` | `string`    | Where hooks land.                                                               |
+| `iconLibrary`   | `"lucide"`  | Reserved for future icon sets.                                                  |
+| `registry`      | `string`    | Base URL, or a local path during development.                                   |
+
+## How aliases are resolved
+
+Registry files are stored with a `target` like `ui/button.tsx`. The leading segment is looked
+up in `aliases`, and the alias is turned back into a filesystem path by reading `paths` from
+your `tsconfig.json`.
+
+So with `"ui": "@/components/ui"` and `"@/*": ["./src/*"]`, the component lands at
+`src/components/ui/button.tsx`.
+
+<Callout>
+  If the CLI cannot find a `paths` entry matching your alias prefix it stops rather than guessing,
+  because guessing means writing source files into the wrong directory.
+</Callout>
+
+## Overriding the registry
+
+Point `registry` at a local build to test changes before publishing:
+
+```json
+{
+  "registry": "./public/r"
+}
+```
+
+A value starting with `.` or `/` is read from disk; anything else is fetched over HTTPS. The
+`--registry` flag on `add` overrides the file for a single run.

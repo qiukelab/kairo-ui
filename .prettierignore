@@ -1,0 +1,9 @@
+node_modules
+dist
+cli/dist
+public/r
+package-lock.json
+
+# Project instruction files — left exactly as their authors wrote them.
+CLAUDE.md
+.claude

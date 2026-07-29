@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>kairo-ui — Components you own</title>
+    <meta
+      name="description"
+      content="An accessible, themeable React component library built on Tailwind CSS v4 and Radix UI."
+    />
+    <meta name="theme-color" content="#2563eb" />
+    <script>
+      // Runs before first paint so a dark-mode reader never sees a white flash.
+      // The storage key and class must match src/theme/theme-context.ts.
+      ;(function () {
+        try {
+          var stored = localStorage.getItem('kairo-ui-theme')
+          var dark =
+            stored === 'dark' ||
+            ((stored === 'system' || !stored) &&
+              window.matchMedia('(prefers-color-scheme: dark)').matches)
+          document.documentElement.classList.toggle('dark', dark)
+          document.documentElement.style.colorScheme = dark ? 'dark' : 'light'
+        } catch (error) {
+          // Storage blocked — the provider will still apply the theme on mount.
+        }
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,48 @@
+## 0.1.0
+
+Initial release.
+
+### Components
+
+Nine components, seven documented in full:
+
+- **Button** — six variants, eight sizes, `asChild`.
+- **Card** — seven slots with self-adjusting divider spacing.
+- **Badge** — six variants matching Button's emphasis levels.
+- **Input** — focus and `aria-invalid` states wired to tokens.
+- **Dialog** — Radix Dialog with focus trapping and a scroll lock.
+- **Tabs** — Radix Tabs, horizontal and vertical.
+- **Tooltip** — self-providing, keyboard-accessible.
+
+`Collapsible` and `Sheet` ship as well. They are used by the docs site itself and are
+installable, but not yet documented.
+
+### Theming
+
+- Tailwind CSS v4 CSS-first configuration. No `tailwind.config.js`, no `postcss.config.js`.
+- Token set defined in `oklch`, derived from the Nongmuek design system: neutrals at hue `254`,
+  `--radius` of `0.5rem`, primary stepping from blue-600 to blue-400 in dark mode to hold AA
+  contrast.
+- Static `brand-50` … `brand-950` ramp for decorative gradients.
+- Class-based dark mode with a pre-paint script, so there is no flash of light on load.
+
+### CLI
+
+- `init` — writes `kairo.json`, appends the token block, installs base dependencies.
+- `add` — resolves `registryDependencies` transitively and installs npm dependencies in one
+  batch.
+- `list` — prints the registry.
+
+### Docs
+
+- MDX pages with build-time syntax highlighting via shiki, dual-themed.
+- Command palette search on ⌘K.
+- Scrollspy table of contents derived from the rendered DOM rather than a source pass.
+
+### Known limitations
+
+- `react-router` carries advisory [GHSA-qwww-vcr4-c8h2](https://github.com/advisories/GHSA-qwww-vcr4-c8h2),
+  which affects RSC mode only. This site is a client-rendered SPA and never reaches that code
+  path; there is no patched release in the 7.x line yet.
+- The `add` command has no `diff` counterpart. Re-adding an updated component overwrites it —
+  review the change in git rather than in the CLI.

@@ -1,0 +1,103 @@
+Dark mode is a `dark` class on `<html>`. Every semantic token is redefined under that class, so
+components need no dark-mode branches of their own.
+
+## The custom variant
+
+Tailwind v4 has no `darkMode` config option. The class strategy is declared in CSS:
+
+```css title="src/styles/globals.css"
+@custom-variant dark (&:is(.dark *));
+```
+
+That one line is what makes `dark:bg-input/30` work.
+
+## Preventing the flash
+
+If the class is applied by React, the browser paints a white page first and then repaints dark.
+The fix is a small synchronous script in `index.html`, before any stylesheet or module:
+
+```html title="index.html"
+<script>
+  ;(function () {
+    try {
+      var stored = localStorage.getItem('kairo-ui-theme')
+      var dark =
+        stored === 'dark' ||
+        ((stored === 'system' || !stored) &&
+          window.matchMedia('(prefers-color-scheme: dark)').matches)
+      document.documentElement.classList.toggle('dark', dark)
+      document.documentElement.style.colorScheme = dark ? 'dark' : 'light'
+    } catch (error) {
+      // Storage blocked — the provider applies the theme on mount instead.
+    }
+  })()
+</script>
+```
+
+<Callout>
+  The `try` block is not defensive padding. `localStorage` **throws** on access in some privacy
+  modes, and an uncaught throw here runs before your app bundle — you would ship a blank page to
+  exactly the users who blocked storage.
+</Callout>
+
+`colorScheme` is set alongside the class so form controls, scrollbars and the like get the
+native dark treatment without extra CSS.
+
+## The provider
+
+```tsx title="src/theme/theme-provider.tsx"
+const [theme, setTheme] = useState<Theme>(readStoredTheme)
+const resolvedTheme = theme === 'system' ? systemPreference : theme
+
+useEffect(() => {
+  const root = document.documentElement
+  root.classList.toggle('dark', resolvedTheme === 'dark')
+  root.style.colorScheme = resolvedTheme
+}, [resolvedTheme])
+```
+
+Three states, not two: `light`, `dark` and `system`. Collapsing `system` into a boolean loses
+the ability to follow the OS after the user has expressed a preference once.
+
+A `matchMedia` listener stays mounted unconditionally, so switching back to `system` picks up
+the current OS value immediately rather than on the next OS change.
+
+## Using it
+
+```tsx
+import { useTheme } from '@/theme/use-theme'
+
+export function ModeToggle() {
+  const { resolvedTheme, setTheme } = useTheme()
+  const next = resolvedTheme === 'dark' ? 'light' : 'dark'
+
+  return (
+    <Button
+      variant="ghost"
+      size="icon-sm"
+      aria-label={`Switch to ${next} theme`}
+      onClick={() => setTheme(next)}
+    >
+      <SunIcon className="hidden dark:block" />
+      <MoonIcon className="block dark:hidden" />
+    </Button>
+  )
+}
+```
+
+`theme` is what the user chose and may be `system`; `resolvedTheme` is what is on screen and
+never is. Toggling reads `resolvedTheme`, because a user on `system` in the dark expects one
+click to produce light.
+
+## Designing for both
+
+Two rules cover most of it.
+
+**Depth comes from lightness, not shadow.** Shadows are close to invisible on a dark surface.
+kairo-ui steps `--background` `0.15` → `--card` `0.19` → `--popover` `0.22` instead.
+
+**Borders become translucent white.** A fixed grey border reads as a hard line on some
+surfaces and vanishes on others. `oklch(1 0 0 / 13%)` adapts to whatever it sits on.
+
+**Accents get lighter, not darker.** See [Theming](/docs/theming) for the contrast maths behind
+the primary swap.

@@ -1,0 +1,55 @@
+kairo-ui is a set of accessible React components built on **Tailwind CSS v4** and **Radix UI**.
+It is not a package you install and import from — it is source code you copy into your project
+and then own outright.
+
+## Why not a package?
+
+Component libraries fail in the same way every time. You need a variant the author did not
+anticipate, or a `div` moved one level up, or a prop threaded through three layers — and the
+only routes open to you are a wrapper, a `!important`, or a fork.
+
+kairo-ui removes the barrier by removing the boundary. `kairo-ui add button` writes
+`button.tsx` into your repository. From that moment it is your file: rename it, delete the
+variants you never use, change the markup. There is no upstream version to fight.
+
+<Callout>
+  The trade-off is real and worth stating: you do not get automatic upgrades. When a component
+  improves here, you re-run `add` and read the diff. That is the price of ownership.
+</Callout>
+
+## What you get
+
+- **Nine components**, seven of them documented in full, all built from the same token set.
+- **CSS-first theming.** Tailwind v4's `@theme` block, no `tailwind.config.js`, every value a
+  CSS variable.
+- **Radix primitives** underneath anything with real interaction — dialogs, tabs, tooltips —
+  so focus management and ARIA are correct before you touch them.
+- **A registry and CLI**, so `add` resolves what a component depends on instead of leaving you
+  to read imports.
+
+## Design principles
+
+### Tokens over hex codes
+
+No component contains a literal colour. Everything resolves through semantic tokens —
+`bg-primary`, `text-muted-foreground`, `border-border` — which are defined once in
+`globals.css` and swapped wholesale in dark mode. Retinting the entire library is a handful of
+lines in one file.
+
+### Variants are data
+
+Every variant lives in a [`cva`](https://cva.style) definition at the top of the file, not
+scattered through JSX. Adding a variant means adding a key, and TypeScript picks it up
+immediately.
+
+### Slots are addressable
+
+Every part of every component carries a `data-slot` attribute. That gives you a stable styling
+hook from the outside — `[&_[data-slot=card-header]]:pb-2` — that survives refactors of the
+class list.
+
+## Where to go next
+
+- [Installation](/docs/installation) — get kairo-ui into an existing project.
+- [Theming](/docs/theming) — the token system, and how to make it yours.
+- [Button](/docs/components/button) — the component that demonstrates every convention above.

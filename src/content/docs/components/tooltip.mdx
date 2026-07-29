@@ -1,0 +1,100 @@
+<ComponentPreview name="tooltip-demo" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add tooltip
+```
+
+## Usage
+
+```tsx
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+```
+
+```tsx
+<Tooltip>
+  <TooltipTrigger asChild>
+    <Button variant="outline" size="icon" aria-label="Delete">
+      <TrashIcon />
+    </Button>
+  </TooltipTrigger>
+  <TooltipContent>Delete permanently</TooltipContent>
+</Tooltip>
+```
+
+## The provider
+
+`Tooltip` mounts its own `TooltipProvider`, so a single tooltip works with no setup. Nesting
+providers is harmless.
+
+For a group that should share timing — a toolbar, where the second hover ought to be instant —
+mount one provider around them:
+
+```tsx
+<TooltipProvider delayDuration={300} skipDelayDuration={300}>
+  <Toolbar />
+</TooltipProvider>
+```
+
+## Triggers must be focusable
+
+A tooltip opens on hover **and** on keyboard focus. That second path only exists if the trigger
+can receive focus, which rules out a bare `div` or `span`:
+
+```tsx
+{
+  /* Keyboard users never see this */
+}
+;<TooltipTrigger asChild>
+  <span>Hover me</span>
+</TooltipTrigger>
+```
+
+Use a button, a link, or add `tabIndex={0}` and a role.
+
+## Not a replacement for a label
+
+A tooltip is supplementary. It is invisible on touch devices, which have no hover at all, and
+it disappears the moment the pointer leaves.
+
+```tsx
+{/* Wrong: the only name is inside a tooltip */}
+<TooltipTrigger asChild>
+  <Button size="icon">
+    <TrashIcon />
+  </Button>
+</TooltipTrigger>
+<TooltipContent>Delete</TooltipContent>
+```
+
+```tsx
+{/* Right: the button names itself; the tooltip adds detail */}
+<TooltipTrigger asChild>
+  <Button size="icon" aria-label="Delete">
+    <TrashIcon />
+  </Button>
+</TooltipTrigger>
+<TooltipContent>Delete permanently — this cannot be undone</TooltipContent>
+```
+
+<Callout>
+  Never put interactive content in a tooltip. It closes as the pointer travels toward it, and it is
+  not reachable by keyboard. A hover card or popover is the component you want.
+</Callout>
+
+## Placement
+
+```tsx
+<TooltipContent side="right" align="start" sideOffset={8}>
+  Delete permanently
+</TooltipContent>
+```
+
+| Prop         | Type                             | Default  |
+| ------------ | -------------------------------- | -------- |
+| `side`       | `top \| right \| bottom \| left` | `top`    |
+| `align`      | `start \| center \| end`         | `center` |
+| `sideOffset` | `number`                         | `4`      |
+
+Radix flips the tooltip automatically when the preferred side would overflow the viewport.

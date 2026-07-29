@@ -1,0 +1,86 @@
+<ComponentPreview name="input-demo" align="start" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add input
+```
+
+## Usage
+
+```tsx
+import { Input } from '@/components/ui/input'
+```
+
+```tsx
+<Input type="email" placeholder="you@example.com" />
+```
+
+## Labels
+
+`Input` renders a bare `input`. It has no built-in label, and a placeholder is not one — it
+disappears the moment someone types, taking the field's meaning with it.
+
+```tsx
+<div className="grid gap-2">
+  <label htmlFor="email" className="text-sm font-medium">
+    Email
+  </label>
+  <Input id="email" type="email" />
+</div>
+```
+
+Where a visible label genuinely does not fit, use `aria-label`.
+
+## Invalid state
+
+Styling keys off `aria-invalid`, so the same attribute that tells assistive technology about
+the error also drives the red border and ring:
+
+```tsx
+;<Input aria-invalid={Boolean(errors.email)} aria-describedby="email-error" />
+{
+  errors.email && (
+    <p id="email-error" className="text-sm text-destructive">
+      {errors.email}
+    </p>
+  )
+}
+```
+
+<Callout>
+  Do not style errors with a className alone. A red border communicates nothing to a screen reader;
+  `aria-invalid` is what makes the state perceivable, and here it is also what makes it visible.
+</Callout>
+
+## Sizing
+
+The field is `h-9` and full-width. Constrain it from the parent rather than on the input:
+
+```tsx
+<div className="max-w-sm">
+  <Input />
+</div>
+```
+
+Font size is `text-base` below `md` and `text-sm` above it. That is deliberate — iOS Safari
+zooms the viewport when a focused field is under 16px, and the jump is disorienting.
+
+## File inputs
+
+`type="file"` is styled through the `file:` variant:
+
+```tsx
+<Input type="file" />
+```
+
+## Composition
+
+There is no `startIcon` prop. Wrap instead, so the padding stays yours to control:
+
+```tsx
+<div className="relative">
+  <SearchIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+  <Input className="pl-9" placeholder="Search" />
+</div>
+```

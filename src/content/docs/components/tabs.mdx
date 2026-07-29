@@ -1,0 +1,87 @@
+<ComponentPreview name="tabs-demo" align="start" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add tabs
+```
+
+## Usage
+
+```tsx
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+```
+
+```tsx
+<Tabs defaultValue="account">
+  <TabsList>
+    <TabsTrigger value="account">Account</TabsTrigger>
+    <TabsTrigger value="password">Password</TabsTrigger>
+  </TabsList>
+  <TabsContent value="account">…</TabsContent>
+  <TabsContent value="password">…</TabsContent>
+</Tabs>
+```
+
+Each `TabsTrigger` is paired with the `TabsContent` carrying the same `value`.
+
+## Keyboard behaviour
+
+Radix implements the WAI-ARIA tabs pattern. Arrow keys move between tabs, `Home` and `End` jump
+to the ends, and the tab list is a single stop in the page's tab order — so `Tab` moves past the
+whole control rather than through every trigger.
+
+## Controlled
+
+```tsx
+const [tab, setTab] = useState('account')
+
+<Tabs value={tab} onValueChange={setTab}>
+  {/* … */}
+</Tabs>
+```
+
+Useful when the active panel belongs in the URL:
+
+```tsx
+const [params, setParams] = useSearchParams()
+
+<Tabs
+  value={params.get('tab') ?? 'account'}
+  onValueChange={(value) => setParams({ tab: value })}
+>
+```
+
+## Orientation
+
+```tsx
+<Tabs orientation="vertical" className="flex-row">
+  <TabsList className="h-auto flex-col">…</TabsList>
+</Tabs>
+```
+
+`orientation` swaps which arrow keys navigate; the classes handle the layout. Set both — one
+without the other gives you a control that looks vertical and navigates horizontally.
+
+## Not navigation
+
+Tabs swap content inside one page. If each panel is really a separate page — with its own URL,
+its own back-button behaviour, its own title — use links and a router, not this component.
+
+<Callout>
+  `TabsContent` unmounts hidden panels by default. Anything expensive to mount, or holding unsaved
+  form state, needs `forceMount` plus your own `hidden` handling.
+</Callout>
+
+## API
+
+| Prop                      | Type                                 | Default      |
+| ------------------------- | ------------------------------------ | ------------ |
+| `defaultValue`            | `string`                             | —            |
+| `value` / `onValueChange` | `string` / `(value: string) => void` | —            |
+| `orientation`             | `horizontal \| vertical`             | `horizontal` |
+| `activationMode`          | `automatic \| manual`                | `automatic`  |
+
+`activationMode="manual"` requires Enter or Space to switch panels. Worth it when a panel
+triggers a network request — with automatic activation, arrowing past three tabs fires three
+requests.

@@ -1,0 +1,10 @@
+# Normalise to LF everywhere. Prettier writes LF by default, so without this a
+# Windows clone with core.autocrlf=true checks out CRLF and `format:check`
+# fails on a tree nobody touched.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff binary
+*.woff2 binary

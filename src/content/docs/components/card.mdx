@@ -1,0 +1,96 @@
+<ComponentPreview name="card-demo" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add card
+```
+
+## Usage
+
+```tsx
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+```
+
+```tsx
+<Card>
+  <CardHeader>
+    <CardTitle>Invite a teammate</CardTitle>
+    <CardDescription>They get access immediately.</CardDescription>
+  </CardHeader>
+  <CardContent>{/* … */}</CardContent>
+  <CardFooter>
+    <Button>Send invite</Button>
+  </CardFooter>
+</Card>
+```
+
+## Anatomy
+
+| Slot              | Role                                                                                               |
+| ----------------- | -------------------------------------------------------------------------------------------------- |
+| `Card`            | The container. Owns the border, radius, background and vertical rhythm.                            |
+| `CardHeader`      | Title area. A CSS grid, so an action can sit beside the text.                                      |
+| `CardTitle`       | Heading text. Renders a `div` — pick your own heading level with `asChild` if the outline matters. |
+| `CardDescription` | Supporting copy in `--muted-foreground`.                                                           |
+| `CardAction`      | Top-right slot for a button, menu or badge.                                                        |
+| `CardContent`     | The body. Horizontal padding only.                                                                 |
+| `CardFooter`      | Actions. Flex row.                                                                                 |
+
+## Dividers
+
+`CardHeader` and `CardFooter` react to a `border-b` or `border-t` on themselves and add the
+padding a divider needs:
+
+```tsx
+<CardHeader className="border-b">…</CardHeader>
+<CardFooter className="border-t">…</CardFooter>
+```
+
+The rule behind it is `[.border-b]:pb-6` — a self-referencing selector, so the spacing appears
+only when the border does. There is no `divided` prop to remember.
+
+## CardAction
+
+`CardHeader` switches to a two-column grid only when a `CardAction` is present:
+
+```tsx
+'has-data-[slot=card-action]:grid-cols-[1fr_auto]'
+```
+
+The header queries its own subtree for the slot, so nothing needs to be threaded down from the
+parent.
+
+```tsx
+<CardHeader>
+  <CardTitle>Usage</CardTitle>
+  <CardDescription>Current billing period</CardDescription>
+  <CardAction>
+    <Badge variant="secondary">Pro</Badge>
+  </CardAction>
+</CardHeader>
+```
+
+## Headings
+
+`CardTitle` is a `div` because a card can appear anywhere in a document and there is no heading
+level that is right everywhere. Where the outline matters, promote it:
+
+```tsx
+<CardTitle asChild>
+  <h3>Invite a teammate</h3>
+</CardTitle>
+```
+
+<Callout>
+  `asChild` on `CardTitle` requires the `Slot` import already used by Button. If you copied
+  `card.tsx` alone, add it before using this pattern.
+</Callout>

@@ -1,0 +1,119 @@
+kairo-ui needs Tailwind CSS v4 and React 19. It has no opinion about your bundler beyond
+that — anything that resolves a path alias will work.
+
+## Vite
+
+### 1. Install Tailwind CSS v4
+
+```bash
+npm install tailwindcss@4 @tailwindcss/vite
+```
+
+Register the plugin and a path alias:
+
+```ts title="vite.config.ts"
+import path from 'node:path'
+
+import tailwindcss from '@tailwindcss/vite'
+import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: { '@': path.resolve(import.meta.dirname, './src') },
+  },
+})
+```
+
+<Callout>
+  There is no `tailwind.config.js` and no `postcss.config.js`. Tailwind v4 is configured from CSS,
+  which is why the token block below lives in your stylesheet.
+</Callout>
+
+### 2. Mirror the alias in TypeScript
+
+```json title="tsconfig.app.json"
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}
+```
+
+`baseUrl` is deprecated in TypeScript 6 and removed in 7 — omit it and `paths` resolves
+relative to the config file.
+
+### 3. Run init
+
+```bash
+npx kairo-ui@latest init
+```
+
+This writes [`kairo.json`](/docs/kairo-json), appends the token block to your stylesheet, and
+installs `clsx`, `tailwind-merge`, `class-variance-authority` and `lucide-react`.
+
+### 4. Add components
+
+```bash
+npx kairo-ui@latest add button card
+```
+
+## Next.js
+
+The steps are the same, with two differences. Install `@tailwindcss/postcss` instead of the
+Vite plugin:
+
+```bash
+npm install tailwindcss@4 @tailwindcss/postcss
+```
+
+```js title="postcss.config.mjs"
+export default {
+  plugins: { '@tailwindcss/postcss': {} },
+}
+```
+
+And mark interactive components as client components — `dialog`, `tabs` and `tooltip` all use
+state:
+
+```tsx
+'use client'
+```
+
+## Manual installation
+
+If you would rather not run the CLI:
+
+```bash
+npm install clsx tailwind-merge class-variance-authority lucide-react radix-ui
+```
+
+Add the `cn` helper:
+
+```ts title="src/lib/utils.ts"
+import { clsx, type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+```
+
+Then copy the token block from [Theming](/docs/theming) into your stylesheet, and paste
+component source from the pages in the sidebar.
+
+## Verify it works
+
+```tsx title="src/App.tsx"
+import { Button } from '@/components/ui/button'
+
+export default function App() {
+  return <Button>It works</Button>
+}
+```
+
+A blue button with a 0.4rem radius means the tokens resolved. An unstyled browser button means
+your stylesheet is not being imported.

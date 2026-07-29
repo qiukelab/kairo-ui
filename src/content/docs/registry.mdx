@@ -1,0 +1,84 @@
+The registry is what makes `kairo-ui add` more than a file copier: it carries each component's
+source alongside the dependencies that source needs.
+
+## Shape
+
+`registry.json` at the repo root is the hand-maintained manifest. `npm run registry:build`
+reads it, inlines the file contents, and writes one JSON document per item into `public/r/`.
+
+```json title="public/r/card.json"
+{
+  "$schema": "https://kairo-ui.dev/schema.json",
+  "name": "card",
+  "type": "registry:ui",
+  "title": "Card",
+  "description": "A container with header, content, footer and action slots.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/card.tsx",
+      "target": "ui/card.tsx",
+      "type": "registry:ui",
+      "content": "import type * as React from 'react'\n…"
+    }
+  ]
+}
+```
+
+`registry/index.json` lists every item without the file bodies, so `list` and the CLI's
+resolver stay cheap.
+
+## Fields
+
+| Field                  | Description                                                                                 |
+| ---------------------- | ------------------------------------------------------------------------------------------- |
+| `name`                 | The identifier passed to `add`.                                                             |
+| `type`                 | `registry:ui`, `registry:lib` or `registry:hook`. Decides which alias the file lands under. |
+| `dependencies`         | npm packages, installed in one batch across everything being added.                         |
+| `registryDependencies` | Other registry items, resolved transitively.                                                |
+| `files[].path`         | Source path in this repository.                                                             |
+| `files[].target`       | Destination, relative to the matching alias.                                                |
+| `files[].content`      | The file, inlined at build time.                                                            |
+
+## Resolution
+
+`add dialog` walks the graph before writing anything:
+
+1. Fetch `dialog.json`.
+2. Fetch each entry in its `registryDependencies`, and theirs, until the set stops growing.
+3. Union every `dependencies` array into one install.
+4. Map each `target` through `kairo.json` aliases, then through `tsconfig` `paths`.
+5. Write, skipping existing files unless `--overwrite` was passed.
+
+A cycle in `registryDependencies` would hang step 2, so the resolver tracks visited names and
+ignores repeats.
+
+## Serving
+
+`public/r/` is copied verbatim into `dist/`, so the docs site is the registry. There is no
+separate service to deploy and nothing to keep in sync — the components documented on this site
+are the same files the CLI hands you.
+
+During development, point `kairo.json` at the build output directly:
+
+```json
+{
+  "registry": "./public/r"
+}
+```
+
+Anything starting with `.` or `/` is read from disk instead of fetched.
+
+## Adding a component
+
+1. Write it under `src/components/ui/`.
+2. Add an entry to `registry.json` — name, title, description, and any dependencies.
+3. Add an `.mdx` page and a demo under `src/content/docs/demos/`.
+4. Add it to `src/content/docs/nav.ts`.
+5. `npm run registry:build`.
+
+<Callout>
+  Step 5 runs automatically as part of `npm run build`, so a component can never be documented on
+  the site without being installable from it.
+</Callout>

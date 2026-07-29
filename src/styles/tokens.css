@@ -1,0 +1,164 @@
+/*
+ * kairo-ui design tokens.
+ *
+ * This file is the single source of truth: the docs site imports it, and
+ * `kairo-ui init` ships it verbatim into consumer projects via the registry.
+ * It must stay self-contained — no rules that only make sense on this site.
+ *
+ * Provenance for every value: src/styles/theme.md
+ */
+
+/* Tailwind v4 has no darkMode config — the class strategy is a custom variant. */
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Flat/crisp scale: tighter than shadcn's 0.625rem default. */
+  --radius: 0.5rem;
+
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.16 0.008 254);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.16 0.008 254);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.16 0.008 254);
+  --primary: oklch(0.546 0.245 262.881); /* blue-600 */
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.965 0.006 254);
+  --secondary-foreground: oklch(0.22 0.01 254);
+  --muted: oklch(0.965 0.006 254);
+  --muted-foreground: oklch(0.47 0.014 254);
+  --accent: oklch(0.955 0.008 254);
+  --accent-foreground: oklch(0.22 0.01 254);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.885 0.008 254);
+  --input: oklch(0.885 0.008 254);
+  --ring: oklch(0.646 0.142 253.92);
+
+  /* Tinted surface for code blocks, callouts and inset panels. */
+  --surface-soft: oklch(0.965 0.015 254);
+
+  --font-sans: 'Noto Sans Thai', 'Inter', ui-sans-serif, system-ui, sans-serif, 'Noto Sans KR';
+  --font-thai: 'Noto Sans Thai', ui-sans-serif, system-ui, sans-serif;
+  --font-en: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-ko: 'Noto Sans KR', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace;
+
+  --sidebar: var(--card);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+
+.dark {
+  /* Depth in dark mode comes from surface lightness steps, not shadow. */
+  --background: oklch(0.15 0.012 254);
+  --foreground: oklch(0.96 0.006 254);
+  --card: oklch(0.19 0.014 254);
+  --card-foreground: oklch(0.96 0.006 254);
+  --popover: oklch(0.22 0.014 254);
+  --popover-foreground: oklch(0.96 0.006 254);
+  /* Lighter than light mode's blue-600: that value only reaches 2.4:1 on this
+     background. blue-400 clears AA at ~6.2:1, and inverts primary-foreground. */
+  --primary: oklch(0.707 0.165 254.624); /* blue-400 */
+  --primary-foreground: oklch(0.15 0.012 254);
+  --secondary: oklch(0.24 0.014 254);
+  --secondary-foreground: oklch(0.96 0.006 254);
+  --muted: oklch(0.24 0.014 254);
+  --muted-foreground: oklch(0.66 0.014 254);
+  --accent: oklch(0.27 0.016 254);
+  --accent-foreground: oklch(0.96 0.006 254);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 13%);
+  --input: oklch(1 0 0 / 17%);
+  --ring: oklch(0.707 0.165 254.624 / 60%);
+
+  --surface-soft: oklch(0.22 0.02 254);
+
+  --sidebar: var(--card);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+
+/* `inline` resolves each var at use-site, so `bg-primary` follows the .dark
+   override above instead of freezing the :root value into the utility. */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-surface-soft: var(--surface-soft);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+
+  --font-sans: var(--font-sans);
+  --font-thai: var(--font-thai);
+  --font-en: var(--font-en);
+  --font-ko: var(--font-ko);
+  --font-mono: var(--font-mono);
+}
+
+/* Static ramp extending the two anchors the semantic tokens use (brand-600 in
+   light, brand-400 in dark). Not `inline` — these are fixed hues that must not
+   flip with the theme, so gradients and accents stay stable in both modes. */
+@theme {
+  --color-brand-50: oklch(0.97 0.014 254.604);
+  --color-brand-100: oklch(0.932 0.032 255.585);
+  --color-brand-200: oklch(0.882 0.059 254.128);
+  --color-brand-300: oklch(0.809 0.105 251.813);
+  --color-brand-400: oklch(0.707 0.165 254.624);
+  --color-brand-500: oklch(0.623 0.214 259.815);
+  --color-brand-600: oklch(0.546 0.245 262.881);
+  --color-brand-700: oklch(0.488 0.243 264.376);
+  --color-brand-800: oklch(0.424 0.199 265.638);
+  --color-brand-900: oklch(0.379 0.146 265.522);
+  --color-brand-950: oklch(0.282 0.091 267.935);
+}
+
+/* Tailwind v4 defaults bare `border`/`outline` utilities to currentColor;
+   restore the tokens so `border` means --border (not black) everywhere. */
+* {
+  box-sizing: border-box;
+  border-color: var(--border);
+  outline-color: var(--ring);
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--background);
+  color: var(--foreground);
+}

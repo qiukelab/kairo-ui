@@ -1,0 +1,64 @@
+<ComponentPreview name="badge-demo" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add badge
+```
+
+## Usage
+
+```tsx
+import { Badge } from '@/components/ui/badge'
+```
+
+```tsx
+<Badge variant="secondary">Pro</Badge>
+```
+
+## Variants
+
+`default`, `secondary`, `outline`, `destructive`, `ghost` and `link` — the same names Button
+uses, mapped to the same tokens, so a badge and a button carrying the same variant read as the
+same level of emphasis.
+
+## Links
+
+A badge renders a `span`. To make it navigate, hand it an anchor:
+
+```tsx
+<Badge variant="outline" asChild>
+  <a href="/changelog">v0.1.0</a>
+</Badge>
+```
+
+Hover styles are written as `[a&]:hover:bg-accent` — they apply only when the rendered element
+is actually an anchor. A static badge gets no hover affordance, because nothing happens when
+you click it.
+
+## Icons
+
+Child `svg` elements are sized to `0.75rem` automatically:
+
+```tsx
+<Badge variant="secondary">
+  <CheckIcon />
+  Verified
+</Badge>
+```
+
+## Status dots
+
+There is no `dot` variant; compose one instead:
+
+```tsx
+<Badge variant="outline">
+  <span className="size-1.5 rounded-full bg-primary" />
+  Operational
+</Badge>
+```
+
+<Callout>
+  Colour alone is not a status indicator. Keep the text label — a red dot and a green dot are the
+  same dot to a reader with deuteranopia.
+</Callout>

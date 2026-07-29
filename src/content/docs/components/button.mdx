@@ -1,0 +1,92 @@
+<ComponentPreview name="button-demo" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add button
+```
+
+## Usage
+
+```tsx
+import { Button } from '@/components/ui/button'
+```
+
+```tsx
+<Button variant="outline">Cancel</Button>
+```
+
+## Variants
+
+Six variants, each mapped to a semantic token pair rather than a literal colour — which is why
+they all follow a retheme without edits.
+
+| Variant       | Use it for                                                    |
+| ------------- | ------------------------------------------------------------- |
+| `default`     | The primary action in a view. One per screen region.          |
+| `secondary`   | A supporting action of comparable weight.                     |
+| `outline`     | Actions on a busy surface, where a filled button would shout. |
+| `ghost`       | Toolbar and icon actions. No resting affordance.              |
+| `destructive` | Irreversible operations.                                      |
+| `link`        | An action that reads as navigation.                           |
+
+## Sizes
+
+<ComponentPreview name="button-sizes-demo" />
+
+Eight sizes: `xs`, `sm`, `default`, `lg`, and an icon-only counterpart for each
+(`icon-xs`, `icon-sm`, `icon`, `icon-lg`). The icon sizes are square and drop the horizontal
+padding.
+
+```tsx
+<Button size="icon" aria-label="Add">
+  <PlusIcon />
+</Button>
+```
+
+<Callout>
+  An icon-only button has no accessible name. `aria-label` is not optional — without it a screen
+  reader announces "button" and nothing else.
+</Callout>
+
+## Icons
+
+Any `svg` child is sized to `1rem` and made non-interactive automatically:
+
+```tsx
+'[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*=size-])]:size-4'
+```
+
+The `:not()` guard means an explicit `size-*` on the icon still wins, so overriding one icon
+does not require fighting the base class.
+
+## asChild
+
+`asChild` merges the button's props onto its child instead of rendering a `button`. This is how
+you get a link that looks like a button without nesting an anchor inside one — which is invalid
+HTML and breaks keyboard activation.
+
+```tsx
+<Button asChild>
+  <Link to="/docs">Get Started</Link>
+</Button>
+```
+
+## API
+
+| Prop      | Type                                                                 | Default   |
+| --------- | -------------------------------------------------------------------- | --------- |
+| `variant` | `default \| secondary \| outline \| ghost \| destructive \| link`    | `default` |
+| `size`    | `default \| xs \| sm \| lg \| icon \| icon-xs \| icon-sm \| icon-lg` | `default` |
+| `asChild` | `boolean`                                                            | `false`   |
+
+All remaining `button` attributes pass through.
+
+`variant` and `size` are also written to the DOM as `data-variant` and `data-size`, so you can
+target them from a parent without knowing the class list:
+
+```css
+[data-slot='button'][data-variant='destructive'] {
+  /* … */
+}
+```

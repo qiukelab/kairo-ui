@@ -1,0 +1,104 @@
+<ComponentPreview name="dialog-demo" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add dialog
+```
+
+## Usage
+
+```tsx
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+```
+
+```tsx
+<Dialog>
+  <DialogTrigger asChild>
+    <Button variant="outline">Rename</Button>
+  </DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Rename project</DialogTitle>
+      <DialogDescription>The project URL stays the same.</DialogDescription>
+    </DialogHeader>
+    <Input defaultValue="kairo-ui" />
+    <DialogFooter>
+      <DialogClose asChild>
+        <Button variant="ghost">Cancel</Button>
+      </DialogClose>
+      <Button>Save</Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+```
+
+## What Radix handles
+
+Built on Radix Dialog, which means the following are already correct and are not worth
+reimplementing:
+
+- Focus moves into the dialog on open and returns to the trigger on close.
+- Focus is trapped while open — Tab cannot reach the page behind it.
+- Escape closes; so does a click on the overlay.
+- The rest of the page is `aria-hidden` and body scroll is locked.
+- `aria-labelledby` and `aria-describedby` are wired from `DialogTitle` and `DialogDescription`.
+
+## Title and description are required
+
+Radix warns in development when `DialogContent` has no `DialogTitle`. A dialog without an
+accessible name is announced as an unlabelled group.
+
+Where the title should not be seen, hide it visually but keep it in the tree:
+
+```tsx
+<DialogTitle className="sr-only">Search documentation</DialogTitle>
+```
+
+That is exactly what the ⌘K palette on this site does.
+
+## Controlled
+
+```tsx
+const [open, setOpen] = useState(false)
+
+<Dialog open={open} onOpenChange={setOpen}>
+  <DialogContent>{/* … */}</DialogContent>
+</Dialog>
+```
+
+With no `DialogTrigger`, open it from anywhere — a keyboard shortcut, a route change, a
+mutation result.
+
+## Closing from a form
+
+`DialogClose` with `asChild` avoids threading `setOpen` through your buttons:
+
+```tsx
+<DialogClose asChild>
+  <Button variant="ghost">Cancel</Button>
+</DialogClose>
+```
+
+<Callout>
+  Do not wrap a submit button in `DialogClose` when the submit can fail. The dialog closes on click,
+  before your handler resolves — and the error has nowhere to render. Close it yourself once the
+  request succeeds.
+</Callout>
+
+## Options
+
+| Prop              | Type      | Default | Description                                         |
+| ----------------- | --------- | ------- | --------------------------------------------------- |
+| `showCloseButton` | `boolean` | `true`  | The × in the corner. Turn it off for custom chrome. |
+
+Width is `sm:max-w-lg` by default; override with `className` on `DialogContent`.

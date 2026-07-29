@@ -1,0 +1,100 @@
+/* Fonts first — CSS requires every @import to precede other rules. One request
+   covers all four families. */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+/* The token layer. Shared verbatim with consumer projects through the registry,
+   so anything site-specific belongs below, not in there. */
+@import './tokens.css';
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Reserve the scrollbar gutter permanently so it never appears/disappears on a
+   short<->long route change or when Radix locks body scroll — that
+   appearing/disappearing is the layout shift. */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* MUST stay inside @layer base: unlayered declarations act as a final layer
+   after every named one, so an unlayered `*` here would outrank the
+   `scrollbar-none` utility below despite losing on specificity. */
+@layer base {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  :lang(th) {
+    font-family: var(--font-thai);
+  }
+}
+
+/* Anchor targets must clear the sticky header. */
+[id] {
+  scroll-margin-top: 6rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* rehype-pretty-code is configured with two shiki themes, so every token span
+   carries both palettes as custom properties. These rules pick which set is
+   live. Only `color` is switched — `--surface-soft` owns the background, which
+   is why `keepBackground` is false in vite.config.ts. */
+code[data-theme*=' '],
+code[data-theme*=' '] span {
+  color: var(--shiki-light);
+}
+
+.dark code[data-theme*=' '],
+.dark code[data-theme*=' '] span {
+  color: var(--shiki-dark);
+}
+
+/* rehype-pretty-code line/word highlighting, retinted onto our own tokens. */
+[data-highlighted-line] {
+  background-color: color-mix(in oklab, var(--primary) 12%, transparent);
+  box-shadow: inset 2px 0 0 var(--primary);
+}
+
+[data-highlighted-chars] {
+  border-radius: var(--radius-sm);
+  background-color: color-mix(in oklab, var(--primary) 16%, transparent);
+  padding: 0.1rem 0.25rem;
+}
+
+[data-rehype-pretty-code-title] {
+  border-bottom: 1px solid var(--border);
+  padding: 0.625rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+/* Hides the scrollbar entirely (chip rows, tab strips) — unlike the thin
+   styling above, hiding is binary so it needs the webkit fallback too. */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

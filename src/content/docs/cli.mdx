@@ -1,0 +1,86 @@
+The CLI writes component source into your project. It never runs at build time and is not a
+dependency of your app — reach for it with `npx` and forget about it.
+
+```bash
+npx kairo-ui@latest <command> [options]
+```
+
+## init
+
+Prepares a project: writes [`kairo.json`](/docs/kairo-json), appends the design tokens to your
+stylesheet, creates `lib/utils.ts`, and installs the base dependencies.
+
+```bash
+npx kairo-ui@latest init
+```
+
+| Option         | Description                                                                       |
+| -------------- | --------------------------------------------------------------------------------- |
+| `--css <path>` | Stylesheet to append tokens to. Default: detected, else `src/styles/globals.css`. |
+| `--cwd <path>` | Run against another directory.                                                    |
+| `-y, --yes`    | Accept every default without prompting.                                           |
+| `--no-install` | Write files but skip the package manager.                                         |
+
+Running `init` twice is safe. The token block is delimited by marker comments, so a second run
+replaces what is between them and leaves your own rules alone.
+
+## add
+
+Fetches components from the registry and writes them into `aliases.ui`.
+
+```bash
+npx kairo-ui@latest add button card
+```
+
+With no arguments it prints the available components and exits.
+
+| Option             | Description                          |
+| ------------------ | ------------------------------------ |
+| `-a, --all`        | Add every component in the registry. |
+| `-o, --overwrite`  | Replace files that already exist.    |
+| `--registry <url>` | Override the registry for this run.  |
+| `--cwd <path>`     | Run against another directory.       |
+| `-y, --yes`        | Skip the confirmation prompt.        |
+| `--no-install`     | Do not install npm dependencies.     |
+
+### Dependency resolution
+
+Registry entries declare two kinds of dependency, and `add` follows both:
+
+- **`dependencies`** are npm packages. They are collected across everything being added and
+  installed in a single command.
+- **`registryDependencies`** are other components. Asking for `card` when it uses `button`
+  pulls `button` in too, transitively.
+
+```bash
+$ npx kairo-ui@latest add dialog
+
+  Resolved 1 component and 1 dependency
+    + src/components/ui/dialog.tsx
+    + src/components/ui/button.tsx  (required by dialog)
+
+  Installing radix-ui, lucide-react
+```
+
+<Callout>
+  Existing files are never silently replaced. Without `--overwrite` the CLI lists what it would have
+  touched and leaves your working tree alone.
+</Callout>
+
+## list
+
+Prints the registry contents without writing anything.
+
+```bash
+npx kairo-ui@latest list
+```
+
+## Exit codes
+
+| Code | Meaning                                                                         |
+| ---- | ------------------------------------------------------------------------------- |
+| `0`  | Success.                                                                        |
+| `1`  | Expected failure — missing `kairo.json`, unknown component, unresolvable alias. |
+
+Everything the CLI writes goes to stderr except `list` output, so it composes cleanly in
+scripts.
