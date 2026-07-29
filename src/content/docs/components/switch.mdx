@@ -1,0 +1,74 @@
+<ComponentPreview name="switch-demo" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add switch
+```
+
+## Usage
+
+```tsx
+import { Switch } from '@/components/ui/switch'
+```
+
+```tsx
+<Switch id="airplane-mode" />
+<Label htmlFor="airplane-mode">Airplane mode</Label>
+```
+
+## Switch or Checkbox?
+
+They look different and are announced differently, and the difference is not cosmetic:
+
+|              | [Checkbox](/docs/components/checkbox)    | Switch                                  |
+| ------------ | ---------------------------------------- | --------------------------------------- |
+| Means        | A value you are **about to submit**      | A setting that takes effect **now**     |
+| Role         | `checkbox`                               | `switch`                                |
+| Third state  | `indeterminate`, for a partial selection | None — "partly on" means nothing        |
+| Belongs with | A form and its Save button               | A settings row, a table cell, a toolbar |
+
+A switch inside a form that still needs saving is the common mistake, and it is a real one: the
+control has promised something the page has not done. If there is a Save button, use a checkbox.
+
+## It still needs a name
+
+Radix renders a `button`, so the label is associated by id — the same as Checkbox:
+
+```tsx
+{/* No name: announced as "switch", nothing more */}
+<Switch />
+
+{/* Named */}
+<Switch id="wifi" /> <Label htmlFor="wifi">Wi-Fi</Label>
+<Switch aria-label="Show this job publicly" />
+```
+
+The second form is what a table cell needs, where the column header is the only visible text and
+every row has its own switch. Name it after the row, not after the column — five switches called
+"Visible" tell a reader nothing about which is which. See the example on
+[Table](/docs/components/table).
+
+## Say what "on" means
+
+A switch has no room for a label of its own, so the surrounding text carries the whole meaning.
+"Notifications" leaves the reader guessing what the off position does; "Email me about new
+releases" does not.
+
+Do not label the two positions separately either — an On/Off pair beside a switch is the switch
+said twice.
+
+## Props
+
+| Prop              | Type                         | Notes                  |
+| ----------------- | ---------------------------- | ---------------------- |
+| `checked`         | `boolean`                    | Controlled             |
+| `defaultChecked`  | `boolean`                    | Uncontrolled           |
+| `onCheckedChange` | `(checked: boolean) => void` | —                      |
+| `disabled`        | `boolean`                    | Stops the keyboard too |
+
+<Callout>
+  If flipping it can fail — a network call that might reject — decide in advance what the control
+  does while it is in flight. Snapping back after a delay with no explanation is worse than
+  disabling it until the result is known.
+</Callout>

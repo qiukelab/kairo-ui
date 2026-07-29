@@ -96,6 +96,62 @@ column rather than as ragged text:
 <TableCell className="text-right tabular-nums">$250.00</TableCell>
 ```
 
+## Rounded
+
+<ComponentPreview name="table-rounded-demo" />
+
+`Table` draws no frame of its own, so a bordered card is a wrapper:
+
+```tsx
+<div className="overflow-hidden rounded-lg border border-border">
+  <Table>…</Table>
+</div>
+```
+
+`overflow-hidden` is what makes the radius real. Without it a filled `TableHeader` or
+`TableFooter` paints square corners straight over the rounded frame — the border looks rounded
+and the fill does not.
+
+## In a card, with a toolbar
+
+<ComponentPreview name="table-jobs-demo" wide />
+
+A table rarely appears alone. Put the title, the count and the primary action in a row above it,
+inside the same bordered wrapper, and the whole thing reads as one object.
+
+**A tinted column is a class on the header and on every cell beneath it:**
+
+```tsx
+<TableHead className="bg-primary/8 dark:bg-primary/12">Goal for 0% fee</TableHead>
+…
+<TableCell className="bg-primary/8 dark:bg-primary/12">฿30,000</TableCell>
+```
+
+There is no column API to reach for. In HTML a column is only ever the cells that happen to line
+up, so anything column-wide is applied cell by cell. (`<colgroup>` exists, but it can carry
+almost no styling — background is one of the few properties it does support, and it sits _behind_
+the row background, so a hovered row would cover it.)
+
+Two things in that example are worth copying rather than approximating:
+
+- **The info icons are buttons.** An `svg` with a `title` cannot take focus, so the explanation
+  would exist only for people using a pointer. Each is a real button with visually-hidden text,
+  wrapped in a [Tooltip](/docs/components/tooltip).
+- **Every row control is named after its row.** Five buttons called "Edit" across five rows are
+  indistinguishable to anyone navigating by control list — so they read "Edit One-page landing
+  site", not "Edit".
+
+The visibility column is a [Switch](/docs/components/switch), not a
+[Checkbox](/docs/components/checkbox), because flipping it publishes immediately rather than
+staging a value for a Save button.
+
+## With a header and an empty state
+
+<ComponentPreview name="table-orders-demo" wide />
+
+The same shape with nothing in it. The empty state goes in one cell spanning every column, so the
+header row survives and the reader can still see what the table _would_ contain.
+
 ## Anatomy
 
 | Slot           | Role                                           |

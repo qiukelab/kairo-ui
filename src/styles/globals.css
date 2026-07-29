@@ -8,6 +8,20 @@
    so anything site-specific belongs below, not in there. */
 @import './tokens.css';
 
+/* Site-only, so it lives here rather than in the token layer that ships to
+   consumers. Tailwind stops at 2xl (96rem), and the docs shell keeps growing
+   past that — a `wide` ComponentPreview needs one more step to use the room a
+   1920px screen actually has.
+
+   **In `rem`, matching Tailwind's own.** Breakpoint variants are ordered by
+   value, and Tailwind cannot compare `1800px` against `96rem`, so a px value
+   sorts ahead of every rem one: the `2xl` rule then came *after* `3xl` in the
+   stylesheet and won at 1920, leaving the wider breakout dead. 112.5rem is the
+   same 1800px, and sorts where it belongs. */
+@theme {
+  --breakpoint-3xl: 112.5rem;
+}
+
 html,
 body,
 #root {

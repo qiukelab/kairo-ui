@@ -12,9 +12,12 @@ import { SiteHeader } from '@/components/layout/site-header'
  *
  * Widening the shell deliberately does **not** widen the prose. `main` grows to
  * absorb the slack — which is what pushes the TOC flush right — while the
- * content inside stays capped at `max-w-3xl` and centred. Letting the text run
- * the full width would be the same mistake as zooming: more pixels used, harder
- * to read.
+ * content inside stays capped at `max-w-[40rem]` and centred. Letting the text
+ * run the full width would be the same mistake as zooming: more pixels used,
+ * harder to read.
+ *
+ * That slack is not wasted: a `wide` ComponentPreview reaches into it, which is
+ * how a seven-column table gets room without the prose following it out.
  */
 export function DocsLayout({
   children,

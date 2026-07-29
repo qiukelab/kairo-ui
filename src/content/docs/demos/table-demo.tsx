@@ -24,7 +24,7 @@ const tone = {
 
 export default function TableDemo() {
   return (
-    <Table className="w-full max-w-lg">
+    <Table>
       <TableCaption>Invoices for the last quarter.</TableCaption>
       <TableHeader>
         <TableRow>

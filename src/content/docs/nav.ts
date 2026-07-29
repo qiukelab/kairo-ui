@@ -197,6 +197,12 @@ export const docsNav: DocsNavGroup[] = [
         label: 'New',
       },
       {
+        title: 'Switch',
+        href: '/docs/components/switch',
+        description: 'A control that takes effect the moment it is flipped.',
+        label: 'New',
+      },
+      {
         title: 'Table',
         href: '/docs/components/table',
         description: 'Rows, headers and a footer, with a scroll container of its own.',

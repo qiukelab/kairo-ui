@@ -22,7 +22,7 @@ const columns = ['Order', 'Reference', 'Amount', 'Due']
 
 export default function TableEmptyDemo() {
   return (
-    <Table className="w-full max-w-lg">
+    <Table>
       <TableHeader>
         <TableRow>
           {columns.map((column) => (
