@@ -28,8 +28,20 @@ export function DocsLayout({
       <SiteHeader />
       <div className="mx-auto flex w-full max-w-[120rem] flex-1 gap-8 px-4 sm:px-6 lg:px-8">
         {/* The rails only widen at 2xl. Growing them at 1280 would take the
-            space straight out of the content column. */}
-        <aside className="sticky top-14 hidden h-[calc(100svh-3.5rem)] w-56 shrink-0 overflow-y-auto py-8 lg:block 2xl:w-64">
+            space straight out of the content column.
+
+            `-ml-3` cancels the items' own `px-3` so the menu text lines up with
+            the logo above it rather than sitting 12px inside. It is safe on the
+            scroll container itself — margins sit outside the scrollport, so
+            nothing clips; the same value on the nav *inside* would cut the left
+            edge off every hover pill.
+
+            `scrollbar-gutter: stable` reserves the track whether or not this
+            list overflows, for the reason already given for the page scrollbar
+            in globals.css: otherwise the whole column jumps sideways between a
+            short page and a long one. `pr-2` then keeps the hover pill from
+            running underneath the scrollbar. */}
+        <aside className="sticky top-14 -ml-3 hidden h-[calc(100svh-3.5rem)] w-56 shrink-0 [scrollbar-gutter:stable] overflow-y-auto py-8 pr-2 lg:block 2xl:w-64">
           <DocsSidebar />
         </aside>
 
@@ -37,7 +49,11 @@ export function DocsLayout({
           <div className="mx-auto w-full max-w-3xl">{children}</div>
         </main>
 
-        <aside className="sticky top-14 hidden h-[calc(100svh-3.5rem)] w-56 shrink-0 overflow-y-auto py-8 xl:block 2xl:w-64">
+        {/* Same reserved gutter as the sidebar: this list scrolls on a long
+            page and not on a short one, and without it the headings reflow as
+            you move between them. No `-ml-3` — the TOC's own left rule is the
+            alignment here, not the item padding. */}
+        <aside className="sticky top-14 hidden h-[calc(100svh-3.5rem)] w-56 shrink-0 [scrollbar-gutter:stable] overflow-y-auto py-8 pr-2 xl:block 2xl:w-64">
           {toc}
         </aside>
       </div>
