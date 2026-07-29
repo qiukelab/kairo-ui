@@ -98,3 +98,17 @@ it disappears the moment the pointer leaves.
 | `sideOffset` | `number`                         | `4`      |
 
 Radix flips the tooltip automatically when the preferred side would overflow the viewport.
+
+## The arrow
+
+The tip is not the arrow SVG's polygon. It is the SVG element's **background** — a square that is
+rotated 45° and pulled halfway into the bubble, which is what lets it have a rounded corner:
+
+```tsx
+<TooltipPrimitive.Arrow className="size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px] bg-foreground fill-foreground" />
+```
+
+Both colour utilities are load-bearing. Drop `bg-foreground` and the box is transparent, so the
+only painted thing left is the polygon — which the translate then hides behind the bubble, and
+the tooltip appears to have no arrow at all. Drop `fill-foreground` and that polygon shows
+through the square as an off-colour triangle. If you restyle the tooltip, change both.

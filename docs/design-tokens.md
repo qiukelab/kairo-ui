@@ -64,6 +64,37 @@ looks slightly dirty; a grey carrying the accent's hue looks intentional.
 **If you retint, rotate the neutrals too.** Changing only `--primary` is the most common way a
 retheme ends up looking subtly wrong.
 
+## Lines come in three weights
+
+```css
+--border: oklch(0.885 0.008 254); /* page structure */
+--input: oklch(0.915 0.007 254); /* a control's outline */
+--border-soft: oklch(0.935 0.006 254); /* a divider inside an elevated surface */
+```
+
+One token cannot do all three jobs. A line that is strong enough to organise a page — the tabs
+rail, the sidebar edge — reads as clutter when it is drawn _inside_ a card, which is already
+separated from the page by its shadow. Splitting them means the card divider can soften without
+weakening the tabs rail, and the input outline can be tuned without touching either.
+
+Note what this does **not** buy. Measured against `--background` in light mode:
+
+| Value                          | Contrast on white |
+| ------------------------------ | ----------------- |
+| `--border` `oklch(0.885)`      | 1.42:1            |
+| `--input` `oklch(0.915)`       | 1.29:1            |
+| `--border-soft` `oklch(0.935)` | 1.21:1            |
+
+None reaches WCAG 1.4.11's 3:1 for non-text contrast, and `--input` is the one that matters most:
+inputs are `bg-transparent` in light mode, so their border is the only thing marking the control.
+It did not pass before this ramp either — the previous value was the same `oklch(0.885)` as
+`--border`, at 1.42:1. This is a deliberate house-style choice matching the wider ecosystem, not
+an oversight, but it is a choice.
+
+An interface that must clear 1.4.11 needs `--input` around `oklch(0.72)`, and should stop relying
+on the outline alone — a filled `--muted` background for the control does the job without
+darkening every hairline on the page.
+
 ## Contrast drove the primary swap
 
 | Mode  | `--primary`                           | Contrast on its background |
