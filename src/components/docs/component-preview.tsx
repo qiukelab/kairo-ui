@@ -29,15 +29,7 @@ function trimSource(source: string) {
     .trim()
 }
 
-export function ComponentPreview({
-  name,
-  className,
-  align = 'center',
-}: {
-  name: string
-  className?: string
-  align?: 'center' | 'start'
-}) {
+export function ComponentPreview({ name, className }: { name: string; className?: string }) {
   const Demo = demoComponents[demoPath(name)]?.default
   const source = demoSources[demoPath(name)]
 
@@ -59,12 +51,11 @@ export function ComponentPreview({
       </TabsList>
 
       <TabsContent value="preview">
-        <div
-          className={cn(
-            'flex min-h-56 flex-wrap items-center gap-4 rounded-lg border border-border p-8',
-            align === 'center' ? 'justify-center' : 'justify-start',
-          )}
-        >
+        {/* Always centred. There used to be an `align` prop, and 18 examples
+            opted into `start` — which left every one of them 191px off-centre
+            in a 768px pane. A demo is a specimen, not page copy; it belongs in
+            the middle of its frame. */}
+        <div className="flex min-h-40 flex-wrap items-center justify-center gap-4 rounded-lg border border-border p-6">
           <Demo />
         </div>
       </TabsContent>

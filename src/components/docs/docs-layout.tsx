@@ -46,7 +46,11 @@ export function DocsLayout({
         </aside>
 
         <main className="min-w-0 flex-1 py-8">
-          <div className="mx-auto w-full max-w-3xl">{children}</div>
+          {/* 40rem, not a scale token: it is the reading measure taken off the
+              reference design, and 768px made the same 16px type read as
+              oversized because the lines were 20% longer. Tables and code
+              blocks bring their own `overflow-x-auto`, so nothing clips. */}
+          <div className="mx-auto w-full max-w-[40rem]">{children}</div>
         </main>
 
         {/* Same reserved gutter as the sidebar: this list scrolls on a long
