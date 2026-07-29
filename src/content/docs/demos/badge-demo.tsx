@@ -7,11 +7,12 @@ export default function BadgeDemo() {
     <>
       <Badge>Default</Badge>
       <Badge variant="secondary">Secondary</Badge>
-      <Badge variant="outline">Outline</Badge>
+      <Badge variant="soft">Soft</Badge>
+      <Badge variant="muted">Muted</Badge>
       <Badge variant="destructive">Destructive</Badge>
-      <Badge variant="secondary">
-        <CheckIcon />
+      <Badge variant="soft">
         Verified
+        <CheckIcon />
       </Badge>
     </>
   )

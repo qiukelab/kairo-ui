@@ -6,8 +6,11 @@ function Card({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="card"
+      // Separated by elevation, not by a line. `shadow-card` carries a hairline
+      // ring of its own under `.dark`, where a blurred shadow would vanish —
+      // see the token definition in styles/tokens.css.
       className={cn(
-        'flex flex-col gap-6 rounded-lg border border-border bg-card py-6 text-card-foreground',
+        'flex flex-col gap-6 rounded-lg bg-card py-6 text-card-foreground shadow-card transition-shadow',
         className,
       )}
       {...props}

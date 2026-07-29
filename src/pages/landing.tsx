@@ -101,10 +101,13 @@ function Hero() {
 
       <div className="relative mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36">
         <div className="mx-auto max-w-3xl text-center">
-          <Badge variant="outline" asChild className="mb-6 bg-background/60 backdrop-blur">
+          {/* `soft` rather than `muted`: the hero wash is near-white, and with
+              no border left to hold the shape a neutral fill disappears into
+              it. The tint also signals that this pill is a link. */}
+          <Badge variant="soft" size="lg" asChild className="mb-6 backdrop-blur">
             <a href={`${githubUrl}/releases`} target="_blank" rel="noreferrer">
               v{siteConfig.version} · Tailwind CSS v4 + Radix UI
-              <ArrowRightIcon className="ml-0.5" />
+              <ArrowRightIcon />
             </a>
           </Badge>
 
@@ -162,10 +165,7 @@ function Features() {
 
       <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {features.map((feature) => (
-          <Card
-            key={feature.title}
-            className="gap-4 transition-colors hover:border-foreground/20 hover:bg-surface-soft/60"
-          >
+          <Card key={feature.title} className="gap-4 transition-shadow hover:shadow-card-hover">
             <CardHeader>
               <span className="mb-2 grid size-9 place-items-center rounded-md bg-primary/10 text-primary">
                 <feature.icon className="size-4.5" aria-hidden />

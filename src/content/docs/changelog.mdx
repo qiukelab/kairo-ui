@@ -1,3 +1,31 @@
+## Unreleased
+
+A flatter house style for the three components that carry the most surface area.
+
+### Breaking
+
+- **Badge** drops the `outline`, `ghost` and `link` variants. No variant draws a border any
+  more, so a name meaning "border only" had nothing left to describe. `soft` (10% primary tint)
+  takes over the low-emphasis coloured role and `muted` the neutral one. A badge that behaves
+  like a link should be one — use `asChild`.
+- **Tabs** replaces the filled pill group with an underline rail. `TabsTrigger` no longer
+  stretches to fill its list; triggers size to their content and align left. Anything relying on
+  `flex-1` behaviour needs `className="[&>*]:flex-1"` on the list.
+
+### Added
+
+- `--shadow-card` and `--shadow-card-hover` tokens. The dark value leads with a zero-blur
+  `0 0 0 1px` layer, so one utility gives a shadow in light mode and a hairline in dark, where a
+  blurred shadow would be invisible.
+- **Badge** gains `size` (`sm | default | lg`), which moves padding, text and icon size together,
+  and mirrors it to the DOM as `data-size`.
+
+### Changed
+
+- **Card** is separated by elevation instead of a border line.
+- **Tabs** handles `orientation="vertical"` layout itself — the extra `flex-row` and `flex-col`
+  classes the docs used to ask for are no longer needed.
+
 ## 0.1.0
 
 Initial release.

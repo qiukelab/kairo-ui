@@ -88,8 +88,38 @@ Shadows are close to invisible on dark surfaces. Elevation is expressed as light
 | `--card`       | `oklch(1 0 0)` | `oklch(0.19 0.014 254)` |
 | `--popover`    | `oklch(1 0 0)` | `oklch(0.22 0.014 254)` |
 
-In light mode all three are white and separation comes from borders; in dark mode the borders
+In light mode all three are white and separation comes from elevation; in dark mode the shadows
 recede and the lightness steps do the work.
+
+## Elevation changes shape between themes
+
+The point above is exactly the problem with a shadow token: a blurred shadow on a dark surface
+is close to invisible, so a borderless card would lose its edge entirely. `--shadow-card`
+answers that by being a _different shape_ in each theme rather than a different opacity.
+
+```css
+:root {
+  --shadow-card:
+    0 1px 2px -1px oklch(0.16 0.008 254 / 0.1), 0 2px 6px -1px oklch(0.16 0.008 254 / 0.06);
+}
+
+.dark {
+  --shadow-card: 0 0 0 1px oklch(1 0 0 / 0.07), 0 2px 8px -2px oklch(0 0 0 / 0.6);
+}
+```
+
+The dark value's first layer has zero blur and 1px spread. That is not a shadow — it is a
+hairline ring, drawn through the same property, standing in for the edge the light theme gets
+for free from its shadow.
+
+Because `box-shadow` accepts both forms, `shadow-card` is a single utility that is correct in
+both themes. `Card` carries no `border` class and no `dark:` variant, which is the whole point:
+the theme knowledge lives in the token, not in every component that wants to look raised.
+
+`--shadow-card-hover` is the same idea one step up, for interactive cards.
+
+Shadow colour is the hue-254 foreground rather than pure black. Black shadows on a tinted
+neutral palette look grey and slightly dirty for the same reason pure grey does — see above.
 
 ## Translucent borders in dark mode
 

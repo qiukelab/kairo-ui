@@ -25,6 +25,22 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 Each `TabsTrigger` is paired with the `TabsContent` carrying the same `value`.
 
+## The rail
+
+Tabs are a rule with an indicator sliding along it — no filled container, no pill. Triggers size
+to their own content and align left, so a two-tab set does not stretch across the viewport.
+
+The indicator is an `::after` pseudo-element on the active trigger, offset by `-bottom-px` so its
+2px bar lies over the list's 1px rule and the two read as one line. Nothing is inserted or
+removed when the selection changes, so switching tabs cannot shift layout.
+
+To centre or distribute the triggers, style the list — the component does not guess:
+
+```tsx
+<TabsList className="justify-center">…</TabsList>
+<TabsList className="[&>*]:flex-1">…</TabsList>
+```
+
 ## Keyboard behaviour
 
 Radix implements the WAI-ARIA tabs pattern. Arrow keys move between tabs, `Home` and `End` jump
@@ -55,13 +71,19 @@ const [params, setParams] = useSearchParams()
 ## Orientation
 
 ```tsx
-<Tabs orientation="vertical" className="flex-row">
-  <TabsList className="h-auto flex-col">…</TabsList>
+<Tabs orientation="vertical">
+  <TabsList>
+    <TabsTrigger value="account">Account</TabsTrigger>
+    <TabsTrigger value="password">Password</TabsTrigger>
+  </TabsList>
+  <TabsContent value="account">…</TabsContent>
 </Tabs>
 ```
 
-`orientation` swaps which arrow keys navigate; the classes handle the layout. Set both — one
-without the other gives you a control that looks vertical and navigates horizontally.
+One prop is enough. `orientation` swaps which arrow keys navigate, and Radix stamps
+`data-orientation` on every part — the component reads it to turn the row into a column and move
+the rule and its indicator to the left edge. There is no second class to remember, and therefore
+no way to end up with a control that looks vertical but navigates horizontally.
 
 ## Not navigation
 

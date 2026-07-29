@@ -37,6 +37,14 @@
   /* Tinted surface for code blocks, callouts and inset panels. */
   --surface-soft: oklch(0.965 0.015 254);
 
+  /* Elevation. Tinted with the neutral hue rather than pure black, so a raised
+     surface stays in the same colour family as everything around it.
+     See the .dark block for why this token changes shape between modes. */
+  --shadow-card:
+    0 1px 2px -1px oklch(0.16 0.008 254 / 0.1), 0 2px 6px -1px oklch(0.16 0.008 254 / 0.06);
+  --shadow-card-hover:
+    0 2px 4px -1px oklch(0.16 0.008 254 / 0.1), 0 6px 16px -2px oklch(0.16 0.008 254 / 0.1);
+
   --font-sans: 'Noto Sans Thai', 'Inter', ui-sans-serif, system-ui, sans-serif, 'Noto Sans KR';
   --font-thai: 'Noto Sans Thai', ui-sans-serif, system-ui, sans-serif;
   --font-en: 'Inter', ui-sans-serif, system-ui, sans-serif;
@@ -77,6 +85,14 @@
   --ring: oklch(0.707 0.165 254.624 / 60%);
 
   --surface-soft: oklch(0.22 0.02 254);
+
+  /* A blurred shadow is close to invisible on a dark surface, so the card would
+     lose its edge entirely. The first layer here has zero blur and 1px spread —
+     it draws the hairline that the light theme gets for free from its shadow,
+     and the second layer supplies what depth is still readable. Same token,
+     different shape, so components need no dark-mode branch. */
+  --shadow-card: 0 0 0 1px oklch(1 0 0 / 0.07), 0 2px 8px -2px oklch(0 0 0 / 0.6);
+  --shadow-card-hover: 0 0 0 1px oklch(1 0 0 / 0.12), 0 6px 18px -4px oklch(0 0 0 / 0.7);
 
   --sidebar: var(--card);
   --sidebar-foreground: var(--foreground);
@@ -119,6 +135,9 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  --shadow-card: var(--shadow-card);
+  --shadow-card-hover: var(--shadow-card-hover);
 
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);

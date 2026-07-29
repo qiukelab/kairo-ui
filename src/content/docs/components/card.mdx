@@ -37,13 +37,42 @@ import {
 
 | Slot              | Role                                                                                               |
 | ----------------- | -------------------------------------------------------------------------------------------------- |
-| `Card`            | The container. Owns the border, radius, background and vertical rhythm.                            |
+| `Card`            | The container. Owns the elevation, radius, background and vertical rhythm.                         |
 | `CardHeader`      | Title area. A CSS grid, so an action can sit beside the text.                                      |
 | `CardTitle`       | Heading text. Renders a `div` — pick your own heading level with `asChild` if the outline matters. |
 | `CardDescription` | Supporting copy in `--muted-foreground`.                                                           |
 | `CardAction`      | Top-right slot for a button, menu or badge.                                                        |
 | `CardContent`     | The body. Horizontal padding only.                                                                 |
 | `CardFooter`      | Actions. Flex row.                                                                                 |
+
+## Elevation, not a border
+
+A card has no border. It lifts off the page with `shadow-card`, a token deliberately kept light
+enough to read as separation rather than as decoration.
+
+That token changes **shape** between themes:
+
+```css
+:root {
+  --shadow-card:
+    0 1px 2px -1px oklch(0.16 0.008 254 / 0.1), 0 2px 6px -1px oklch(0.16 0.008 254 / 0.06);
+}
+
+.dark {
+  --shadow-card: 0 0 0 1px oklch(1 0 0 / 0.07), 0 2px 8px -2px oklch(0 0 0 / 0.6);
+}
+```
+
+A blurred shadow is close to invisible on a dark surface, so in dark mode the first layer has
+zero blur and 1px spread — it draws the hairline the light theme gets for free from its shadow.
+Because `box-shadow` takes both forms, one `shadow-card` utility is correct in both themes and
+the component needs no dark-mode branch.
+
+Raise a card on hover with the matching step:
+
+```tsx
+<Card className="transition-shadow hover:shadow-card-hover">…</Card>
+```
 
 ## Dividers
 
