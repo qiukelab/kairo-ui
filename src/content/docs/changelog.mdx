@@ -1,5 +1,56 @@
 ## Unreleased
 
+### Added — Switch, and Table examples that fill their frame
+
+- **Switch**, a control that takes effect the moment it is flipped. Not a `Checkbox` with
+  different styling: `role="switch"`, no third state, and no Save button implied. `switch.mdx`
+  spells out which to reach for, because picking by looks is how a form ends up with toggles that
+  quietly need saving.
+- Three Table examples: a **rounded, bordered** frame; a **card with a toolbar**, a tinted
+  column, per-row switches and named row actions; and the same shape holding an **empty state**.
+  The first two demos also stop being capped at `max-w-lg` and now fill their pane.
+- Every preview is the width of the reading column. The wide examples scroll sideways inside
+  their frame rather than breaking out of it — which is the same thing `Table` does on a phone,
+  so the docs demonstrate the behaviour instead of designing around it.
+
+Two things the new examples document rather than merely show. A tinted column is a class on the
+header _and_ on every cell beneath it — HTML has no column to style, only cells that line up. And
+an info icon beside a column name has to be a button: an `svg` with a `title` cannot take focus,
+so the explanation would exist only for people using a pointer.
+
+### Added — tables, overlays and form controls
+
+Eight components: **Table**, **Checkbox**, **Select**, **Popover**, **Hover Card**, **Empty**,
+**Command** and **Drawer** — plus two pages that are recipes rather than components, because
+neither has a file to install:
+
+- **Combobox** is a `Popover` holding a `Command`. `Popover` exists mainly so this can.
+- **Data Table** is `Table` plus [`@tanstack/react-table`](https://tanstack.com/table), covering
+  sorting, filtering, row selection, column visibility and pagination. Server-driven tables are
+  named as out of scope rather than half-shown.
+
+Details worth knowing:
+
+- **Checkbox has three states.** `checked="indeterminate"` reports `aria-checked="mixed"` and
+  draws its own glyph — the state a select-all needs when only some rows are chosen. Claiming
+  `true` there would say every row is selected.
+- **Table brings its own scroll container** and sets `scope="col"` on every `TableHead`. A table
+  cannot be made to fit, so the overflow is not left to the caller to remember.
+- **Empty goes inside a table**, in one cell spanning every column. As a sibling it leaves a
+  `tbody` with no rows — invalid, and announced as a table of nothing.
+- **Drawer is not a second Sheet.** The difference is the drag gesture, not the direction; the
+  handle is `aria-hidden` because dragging has no keyboard equivalent, which makes `DrawerClose`
+  and Escape load-bearing.
+
+### Changed
+
+- **The site's own ⌘K search now uses `Command`.** It previously hand-rolled every cmdk class, so
+  shipping the component without this would have left two copies of the same styling and a docs
+  site demonstrating something it did not use. Its behaviour is unchanged, including the
+  `value={group + title}` fix that stops hidden description text winning a match.
+- **The Components sidebar is alphabetical.** At 27 entries the previous order — roughly
+  by relation, never quite consistently — had stopped being scannable.
+
 ### Added — seven components
 
 - **Accordion**, **Alert**, **Alert Dialog**, **Aspect Ratio**, **Attachment**, **Avatar** and

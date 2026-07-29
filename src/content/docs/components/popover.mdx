@@ -1,0 +1,77 @@
+<ComponentPreview name="popover-demo" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add popover
+```
+
+## Usage
+
+```tsx
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+```
+
+```tsx
+<Popover>
+  <PopoverTrigger asChild>
+    <Button variant="outline">Set dimensions</Button>
+  </PopoverTrigger>
+  <PopoverContent>{/* … */}</PopoverContent>
+</Popover>
+```
+
+## Which floating thing is this?
+
+Four components here render a panel next to something. They are not interchangeable:
+
+| Use                                             | When                                                         | Opens on     |
+| ----------------------------------------------- | ------------------------------------------------------------ | ------------ |
+| [Tooltip](/docs/components/tooltip)             | A word or two of hint. Never interactive                     | Hover, focus |
+| [Hover Card](/docs/components/hover-card)       | A preview of what a link leads to                            | Hover, focus |
+| **Popover**                                     | A small amount of **interactive** content — a form, a picker | Click        |
+| [Dropdown Menu](/docs/components/dropdown-menu) | A list of actions                                            | Click        |
+
+The dividing line is interaction. A tooltip closes as your pointer travels toward it, so anything
+you can click belongs in a popover. And a popover holding only text should have been a tooltip —
+it takes a click to open and a click to dismiss, for something that could have been read in
+passing.
+
+## Anchoring elsewhere
+
+`PopoverAnchor` positions the panel against something other than the trigger:
+
+```tsx
+<Popover>
+  <PopoverAnchor asChild>
+    <Input />
+  </PopoverAnchor>
+  <PopoverTrigger asChild>
+    <Button size="icon-sm">
+      <ChevronDownIcon />
+    </Button>
+  </PopoverTrigger>
+  <PopoverContent>…</PopoverContent>
+</Popover>
+```
+
+Useful when a small button opens a panel that should line up with the field beside it rather than
+with the button.
+
+## Anatomy
+
+| Slot             | Role                                                           |
+| ---------------- | -------------------------------------------------------------- |
+| `Popover`        | Root. `open` / `onOpenChange` for a controlled panel           |
+| `PopoverTrigger` | Use `asChild` with a real button                               |
+| `PopoverAnchor`  | Optional positioning reference                                 |
+| `PopoverContent` | The panel. Portalled, `align` and `sideOffset` as with Tooltip |
+
+Focus moves into the panel on open and returns to the trigger on close; Escape and an outside
+click both dismiss it.
+
+<Callout>
+  `PopoverContent` defaults to `w-72` and `p-4`. Pass `p-0` when the content brings its own padding
+  — a [Command](/docs/components/command), for instance, as [Combobox](/docs/components/combobox)
+  does.
+</Callout>

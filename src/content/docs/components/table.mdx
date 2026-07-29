@@ -1,0 +1,174 @@
+<ComponentPreview name="table-demo" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add table
+```
+
+## Usage
+
+```tsx
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+```
+
+```tsx
+<Table>
+  <TableCaption>Invoices for the last quarter.</TableCaption>
+  <TableHeader>
+    <TableRow>
+      <TableHead>Invoice</TableHead>
+      <TableHead className="text-right">Amount</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell>INV-001</TableCell>
+      <TableCell className="text-right">$250.00</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+```
+
+## It brings its own scroll container
+
+`Table` renders a wrapper with `overflow-x-auto` around the `table` element.
+
+A table is the one thing on a page that genuinely cannot be made to fit — its width is the sum of
+its columns, and no amount of wrapping changes that. Leaving the overflow to the caller means
+every caller eventually forgets, and a column falls off the right edge on a phone with nothing to
+suggest it was ever there. Wrapping here makes the failure mode a scrollbar.
+
+The wide examples further down are not given extra room to fit — they scroll sideways in their
+frame, which is what they would do in a narrow layout too.
+
+## Two things it does for accessibility
+
+**`TableHead` sets `scope="col"` for you.** That attribute is what ties a header to the cells
+beneath it, so a screen reader can announce "Amount, $250.00" instead of just "$250.00". It is
+not inferred from position, and it is exactly the sort of thing that gets left out.
+
+**Prefer `TableCaption` to a heading beside the table.** A caption is associated with the table
+itself, so it is announced on arrival rather than only if someone happens to read the line above.
+
+```tsx
+{/* The table has no name of its own */}
+<h3>Invoices</h3>
+<Table>…</Table>
+
+{/* The name belongs to the table */}
+<Table>
+  <TableCaption>Invoices for the last quarter.</TableCaption>
+  …
+</Table>
+```
+
+## Empty states go inside the table
+
+<ComponentPreview name="table-empty-demo" />
+
+```tsx
+<TableBody>
+  <TableRow className="hover:bg-transparent">
+    <TableCell colSpan={columns.length}>
+      <Empty>…</Empty>
+    </TableCell>
+  </TableRow>
+</TableBody>
+```
+
+Rendering the empty state as a _sibling_ of the table leaves a `tbody` with no rows — invalid
+HTML, and announced as a table containing nothing rather than as a message. One cell spanning
+every column keeps the structure intact. See [Empty](/docs/components/empty).
+
+## Numbers
+
+Right-align them and use `tabular-nums`, so digits occupy equal width and the column reads as a
+column rather than as ragged text:
+
+```tsx
+<TableCell className="text-right tabular-nums">$250.00</TableCell>
+```
+
+## Rounded
+
+<ComponentPreview name="table-rounded-demo" />
+
+`Table` draws no frame of its own, so a bordered card is a wrapper:
+
+```tsx
+<div className="overflow-hidden rounded-lg border border-border">
+  <Table>…</Table>
+</div>
+```
+
+`overflow-hidden` is what makes the radius real. Without it a filled `TableHeader` or
+`TableFooter` paints square corners straight over the rounded frame — the border looks rounded
+and the fill does not.
+
+## In a card, with a toolbar
+
+<ComponentPreview name="table-jobs-demo" />
+
+A table rarely appears alone. Put the title, the count and the primary action in a row above it,
+inside the same bordered wrapper, and the whole thing reads as one object.
+
+**A tinted column is a class on the header and on every cell beneath it:**
+
+```tsx
+<TableHead className="bg-primary/8 dark:bg-primary/12">Goal for 0% fee</TableHead>
+…
+<TableCell className="bg-primary/8 dark:bg-primary/12">฿30,000</TableCell>
+```
+
+There is no column API to reach for. In HTML a column is only ever the cells that happen to line
+up, so anything column-wide is applied cell by cell. (`<colgroup>` exists, but it can carry
+almost no styling — background is one of the few properties it does support, and it sits _behind_
+the row background, so a hovered row would cover it.)
+
+Two things in that example are worth copying rather than approximating:
+
+- **The info icons are buttons.** An `svg` with a `title` cannot take focus, so the explanation
+  would exist only for people using a pointer. Each is a real button with visually-hidden text,
+  wrapped in a [Tooltip](/docs/components/tooltip).
+- **Every row control is named after its row.** Five buttons called "Edit" across five rows are
+  indistinguishable to anyone navigating by control list — so they read "Edit One-page landing
+  site", not "Edit".
+
+The visibility column is a [Switch](/docs/components/switch), not a
+[Checkbox](/docs/components/checkbox), because flipping it publishes immediately rather than
+staging a value for a Save button.
+
+## With a header and an empty state
+
+<ComponentPreview name="table-orders-demo" />
+
+The same shape with nothing in it. The empty state goes in one cell spanning every column, so the
+header row survives and the reader can still see what the table _would_ contain.
+
+## Anatomy
+
+| Slot           | Role                                           |
+| -------------- | ---------------------------------------------- |
+| `Table`        | The element, plus its scroll container         |
+| `TableCaption` | The table's accessible name. Rendered below it |
+| `TableHeader`  | `thead`                                        |
+| `TableBody`    | `tbody`. Drops the divider under the last row  |
+| `TableFooter`  | `tfoot`, for totals                            |
+| `TableRow`     | Hover and `data-state="selected"` styling      |
+| `TableHead`    | `th` with `scope="col"`                        |
+| `TableCell`    | `td`                                           |
+
+Rows divide in `--border-soft` and the header in `--border` — the frame is the structure, the
+rows inside only need grouping. See [Theming](/docs/theming).
+
+For sorting, filtering, selection and pagination, see [Data Table](/docs/components/data-table).

@@ -1,0 +1,105 @@
+<ComponentPreview name="select-demo" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add select
+```
+
+## Usage
+
+```tsx
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+```
+
+```tsx
+<Select>
+  <SelectTrigger>
+    <SelectValue placeholder="Select a timezone" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="ict">Indochina Time (UTC+7)</SelectItem>
+    <SelectItem value="jst">Japan Standard Time (UTC+9)</SelectItem>
+  </SelectContent>
+</Select>
+```
+
+## The value is not a name
+
+`SelectValue` shows what is currently chosen, and that changes. It is not what the control _is_,
+so it cannot serve as the accessible name — a select announced as "Japan Standard Time" tells you
+nothing about what you are choosing.
+
+Give it a real one, either with a [Field](/docs/components/field) label or `aria-label`:
+
+```tsx
+<Field>
+  <FieldLabel>Timezone</FieldLabel>
+  <FieldControl>
+    <Select>…</Select>
+  </FieldControl>
+</Field>
+
+{/* Or, with no visible label */}
+<SelectTrigger aria-label="Timezone">
+```
+
+## Groups
+
+<ComponentPreview name="select-groups-demo" />
+
+`SelectLabel` inside a `SelectGroup` is a group heading, not an option — it is not selectable and
+not announced as one. Use `SelectSeparator` between groups.
+
+## Sizes
+
+| Prop   | Type            | Default   |
+| ------ | --------------- | --------- |
+| `size` | `default \| sm` | `default` |
+
+36px and 32px, matching [Input](/docs/components/input) so a select and a text field sitting in
+the same form line up. Mirrored to the DOM as `data-size`.
+
+## Widths
+
+The content is told to be at least as wide as its trigger:
+
+```
+min-w-(--radix-select-trigger-width)
+```
+
+Without it a long option makes the list wider than the control it opened from, which looks like a
+mistake. The trigger itself is `w-fit` — pass `className="w-full"` when it should fill a form
+row, as the first example does.
+
+## Not for a menu of actions
+
+A select produces a **value**. If the items _do_ things — Copy, Rename, Delete — that is a
+[Dropdown Menu](/docs/components/dropdown-menu). They look similar and are announced completely
+differently: a listbox reports "3 of 8 selected", a menu does not.
+
+If you need a searchable list of values, that is a [Combobox](/docs/components/combobox).
+
+## Anatomy
+
+| Slot              | Role                                                      |
+| ----------------- | --------------------------------------------------------- |
+| `Select`          | Root. Owns `value` / `defaultValue` / `onValueChange`     |
+| `SelectTrigger`   | The control. Renders its own chevron                      |
+| `SelectValue`     | The current value, or the placeholder                     |
+| `SelectContent`   | The listbox. Portalled, and capped to the space available |
+| `SelectItem`      | One option. `value` is required and must be unique        |
+| `SelectGroup`     | Groups items under a `SelectLabel`                        |
+| `SelectSeparator` | A hairline between groups                                 |
+
+<Callout>
+  `SelectItem` cannot take an empty string as its `value` — Radix reserves that for "nothing
+  selected". For an explicit "None" option, give it a real value like `"none"` and treat it as such
+  in your handler.
+</Callout>

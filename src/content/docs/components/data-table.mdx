@@ -1,0 +1,97 @@
+<ComponentPreview name="data-table-demo" />
+
+## This page is a recipe, not a component
+
+There is no `kairo-ui add data-table`. A data table is too tied to your columns, your data and
+your API to ship as one file — every real one differs. What you can install are the parts:
+
+```bash
+npx kairo-ui@latest add table checkbox button input dropdown-menu
+npm install @tanstack/react-table
+```
+
+Then copy the demo above and change the columns. That is the whole approach.
+
+## Why TanStack
+
+[`@tanstack/react-table`](https://tanstack.com/table) is headless: it computes sorted, filtered
+and paginated row models and renders nothing. Our `Table` supplies the markup, so the two do not
+overlap.
+
+The alternative — sorting an array in a `useState` — works until the second requirement arrives.
+Multi-column sort, faceted filters, stable pagination across a filter change and row selection
+that survives sorting are each individually fiddly and collectively a library.
+
+## Three things a data table gets wrong by default
+
+This is most of why the demo is worth copying rather than rebuilding.
+
+### Sorting must be announced, not just drawn
+
+A chevron is a picture. `aria-sort` on the sorted header is the part assistive technology reads:
+
+```tsx
+<TableHead
+  aria-sort={
+    sorted === 'asc' ? 'ascending' : sorted === 'desc' ? 'descending' : undefined
+  }
+>
+```
+
+Leave it out and a screen reader user can trigger a sort but never learn that it happened, or in
+which direction.
+
+### Row checkboxes need individual names
+
+```tsx
+<Checkbox aria-label={`Select ${row.original.title}`} />
+```
+
+Six controls all named "Select" are useless to anyone navigating by control list — they have no
+way to tell which row each belongs to.
+
+### Select-all has three states, not two
+
+```tsx
+checked={
+  table.getIsAllPageRowsSelected()
+    ? true
+    : table.getIsSomePageRowsSelected()
+      ? 'indeterminate'
+      : false
+}
+```
+
+With two rows of six selected, `true` claims all six are. [Checkbox](/docs/components/checkbox)
+renders `indeterminate` as `aria-checked="mixed"` with its own glyph, which is the honest answer.
+
+Note it is `getIsAll**Page**RowsSelected` — selecting "all" selects the current page, not rows the
+reader has never seen.
+
+## Column visibility
+
+```tsx
+<DropdownMenuCheckboxItem
+  checked={column.getIsVisible()}
+  onSelect={(event) => event.preventDefault()}
+  onCheckedChange={(value) => column.toggleVisibility(Boolean(value))}
+>
+```
+
+`onSelect` is prevented so the menu stays open — toggling several columns in a row is the normal
+case, and re-opening the menu between each is not.
+
+## What this page does not cover
+
+**Server-side anything.** The demo holds every row in memory and lets TanStack sort, filter and
+paginate them. That is right up to a few thousand rows and wrong beyond it.
+
+For a server-driven table you set `manualPagination`, `manualSorting` and `manualFiltering`, pass
+`pageCount` yourself, and refetch when the state changes. The markup on this page stays the same;
+the row models come from your API instead. TanStack's own docs cover it properly, and repeating
+them badly here would help nobody.
+
+<Callout>
+  Announce the result of a filter. The demo's row-count line carries `aria-live="polite"`, so
+  narrowing 6 rows to 1 is spoken rather than silently redrawn.
+</Callout>

@@ -6,15 +6,23 @@ import { cn } from '@/lib/utils'
 
 // The demo that renders and the source that is displayed come from the same
 // file, so the Code tab can never drift from the Preview tab.
-const demoComponents = import.meta.glob('/src/content/docs/demos/*.tsx', {
-  eager: true,
-}) as Record<string, { default: React.ComponentType }>
+//
+// Tests are excluded explicitly. This glob is **eager**, so a co-located
+// `*.test.tsx` — which is where this repo puts tests, right beside the thing
+// they test — gets imported into the browser bundle, and its top-level
+// `describe()` throws before anything renders. It takes the whole docs site
+// down, and neither the build nor the test run notices.
+// The patterns are repeated rather than shared through a constant: this is a
+// compile-time transform, and Vite rejects anything but a literal here.
+const demoComponents = import.meta.glob(
+  ['/src/content/docs/demos/*.tsx', '!/src/content/docs/demos/*.test.tsx'],
+  { eager: true },
+) as Record<string, { default: React.ComponentType }>
 
-const demoSources = import.meta.glob('/src/content/docs/demos/*.tsx', {
-  eager: true,
-  query: '?raw',
-  import: 'default',
-}) as Record<string, string>
+const demoSources = import.meta.glob(
+  ['/src/content/docs/demos/*.tsx', '!/src/content/docs/demos/*.test.tsx'],
+  { eager: true, query: '?raw', import: 'default' },
+) as Record<string, string>
 
 function demoPath(name: string) {
   return `/src/content/docs/demos/${name}.tsx`
