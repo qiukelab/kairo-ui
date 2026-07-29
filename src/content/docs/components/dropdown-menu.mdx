@@ -1,0 +1,100 @@
+<ComponentPreview name="dropdown-menu-demo" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add dropdown-menu
+```
+
+## Usage
+
+```tsx
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+```
+
+```tsx
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <Button variant="outline">Open menu</Button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuLabel>My account</DropdownMenuLabel>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem>Profile</DropdownMenuItem>
+    <DropdownMenuItem variant="destructive">Log out</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+## Checkboxes and radios
+
+<ComponentPreview name="dropdown-menu-checkboxes-demo" />
+
+Both reserve their indicator gutter whether or not they are selected, so ticking one does not
+shunt every label sideways.
+
+A checkbox menu closes on select by default, which is wrong when the point is to toggle several
+things in a row. Override it:
+
+```tsx
+<DropdownMenuCheckboxItem
+  checked={checked}
+  onSelect={(event) => event.preventDefault()}
+  onCheckedChange={setChecked}
+>
+  Status
+</DropdownMenuCheckboxItem>
+```
+
+## Highlight is not hover
+
+Every item styles itself from `data-highlighted`, never `:hover`. Radix sets that attribute for
+both the pointer and the arrow keys, which is what keeps them showing the same state.
+
+Restyle these with `hover:` and keyboard navigation stops indicating where it is — the menu still
+works, it just becomes impossible to follow without a mouse. That is the single easiest thing to
+break here.
+
+## Destructive items
+
+```tsx
+<DropdownMenuItem variant="destructive">
+  <LogOutIcon />
+  Log out
+</DropdownMenuItem>
+```
+
+Tinted rather than filled, and the tint deepens on highlight. Reserve it for the item that
+removes or ends something; a menu where three rows are red communicates nothing.
+
+## Shortcuts are decorative
+
+`DropdownMenuShortcut` renders the keystroke and nothing else — **it does not bind anything.**
+The application still has to listen for the key. It is `aria-hidden`, because "Log out ⇧⌘Q" as a
+single announced label is worse than "Log out".
+
+## Anatomy
+
+| Slot                       | Role                                                       |
+| -------------------------- | ---------------------------------------------------------- |
+| `DropdownMenuTrigger`      | Opens the menu. Use `asChild` with a real button           |
+| `DropdownMenuContent`      | The surface. Caps its own height to the space available    |
+| `DropdownMenuItem`         | A row. `variant`, and `inset` to align with an icon gutter |
+| `DropdownMenuCheckboxItem` | Toggle with a check indicator                              |
+| `DropdownMenuRadioItem`    | One of a set, inside `DropdownMenuRadioGroup`              |
+| `DropdownMenuLabel`        | A non-interactive heading for a group                      |
+| `DropdownMenuSeparator`    | A hairline in `--border-soft`                              |
+| `DropdownMenuShortcut`     | Decorative keystroke text                                  |
+| `DropdownMenuSub`          | Nested menu, with `SubTrigger` and `SubContent`            |
+
+<Callout>
+  A menu is for actions, not for choosing a form value. If the result is a value you submit, use a
+  select or a radio group — a menu's selection is not part of the form and not announced as one.
+</Callout>

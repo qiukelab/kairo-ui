@@ -1,4 +1,4 @@
-<ComponentPreview name="input-field-demo" align="start" />
+<ComponentPreview name="input-field-demo" />
 
 ## Installation
 
@@ -100,7 +100,7 @@ description or error onto its own line beneath them.
 
 ## Disabled
 
-<ComponentPreview name="input-disabled-demo" align="start" />
+<ComponentPreview name="input-disabled-demo" />
 
 `disabled` on `Field` reaches the control, and dims the label and description through
 `group-data-[disabled=true]/field:`. Setting `disabled` on the input alone would grey the box and
@@ -108,7 +108,7 @@ leave its label at full strength.
 
 ## Invalid
 
-<ComponentPreview name="input-invalid-demo" align="start" />
+<ComponentPreview name="input-invalid-demo" />
 
 `invalid` sets `aria-invalid` on the control, turns the label destructive, and adds `FieldError`
 to `aria-describedby`. An error with no content renders nothing and is left out of
@@ -116,13 +116,13 @@ to `aria-describedby`. An error with no content renders nothing and is left out 
 
 ## Required
 
-<ComponentPreview name="input-required-demo" align="start" />
+<ComponentPreview name="input-required-demo" />
 
 ## Groups and layout
 
 `FieldGroup` is a `grid gap-6`. To place fields side by side, hand it column classes:
 
-<ComponentPreview name="input-grid-demo" align="start" />
+<ComponentPreview name="input-grid-demo" />
 
 ```tsx
 <FieldGroup className="gap-4 sm:grid-cols-2">

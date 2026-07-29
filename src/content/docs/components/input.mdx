@@ -27,7 +27,7 @@ it in [`Field`](/docs/components/field), which supplies the label and the wiring
 Use `Field`, `FieldLabel` and `FieldDescription` to create an input with a label and a
 description.
 
-<ComponentPreview name="input-field-demo" align="start" />
+<ComponentPreview name="input-field-demo" />
 
 ```tsx
 <Field>
@@ -46,14 +46,14 @@ No `id` appears anywhere. `Field` generates one, `FieldLabel` points `htmlFor` a
 
 Use `FieldGroup` to show multiple `Field` blocks and to build forms.
 
-<ComponentPreview name="input-field-group-demo" align="start" />
+<ComponentPreview name="input-field-group-demo" />
 
 ## Disabled
 
 Pass `disabled` to `Field` rather than to the input. It reaches the control **and** dims the
 label and description, which a `disabled` on the input alone cannot do.
 
-<ComponentPreview name="input-disabled-demo" align="start" />
+<ComponentPreview name="input-disabled-demo" />
 
 ```tsx
 <Field disabled>…</Field>
@@ -65,7 +65,7 @@ Pass `invalid` to `Field`. It sets `aria-invalid` on the control — the same at
 assistive technology about the error is what draws the red border — turns the label
 destructive, and adds the error to `aria-describedby`.
 
-<ComponentPreview name="input-invalid-demo" align="start" />
+<ComponentPreview name="input-invalid-demo" />
 
 ```tsx
 <Field invalid>
@@ -88,14 +88,14 @@ Pass `required` to `Field`. The control gets the native `required` attribute and
 an asterisk — marked `aria-hidden`, because `required` is already announced and "star" would only
 duplicate it.
 
-<ComponentPreview name="input-required-demo" align="start" />
+<ComponentPreview name="input-required-demo" />
 
 ## File
 
 Use `type="file"` to create a file input. The button the browser renders inside it is styled
 through the `file:` variant.
 
-<ComponentPreview name="input-file-demo" align="start" />
+<ComponentPreview name="input-file-demo" />
 
 ## Inline
 
@@ -121,7 +121,7 @@ readable when validation fails.
 
 `FieldGroup` is a grid. Give it column classes to place fields side by side.
 
-<ComponentPreview name="input-grid-demo" align="start" />
+<ComponentPreview name="input-grid-demo" />
 
 ```tsx
 <FieldGroup className="gap-4 sm:grid-cols-2">
@@ -138,7 +138,7 @@ into halves.
 `FieldLabel` is a flex row, so a [`Badge`](/docs/components/badge) can sit in it to flag a
 field.
 
-<ComponentPreview name="input-badge-demo" align="start" />
+<ComponentPreview name="input-badge-demo" />
 
 ```tsx
 <FieldLabel>
@@ -154,7 +154,7 @@ field.
 To put an icon, a prefix or a button **inside** the input's border, use
 [`InputGroup`](/docs/components/input-group).
 
-<ComponentPreview name="input-group-demo" align="start" />
+<ComponentPreview name="input-group-demo" />
 
 ```tsx
 <InputGroup>
@@ -175,7 +175,7 @@ To put an icon, a prefix or a button **inside** the input's border, use
 To attach a button **beside** the input so the two read as one control, use
 [`ButtonGroup`](/docs/components/button-group).
 
-<ComponentPreview name="input-button-group-demo" align="start" />
+<ComponentPreview name="input-button-group-demo" />
 
 ## Sizing
 

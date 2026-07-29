@@ -1,0 +1,84 @@
+<ComponentPreview name="accordion-demo" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add accordion
+```
+
+## Usage
+
+```tsx
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
+```
+
+```tsx
+<Accordion type="single" collapsible>
+  <AccordionItem value="ownership">
+    <AccordionTrigger>Who owns the code?</AccordionTrigger>
+    <AccordionContent>You do.</AccordionContent>
+  </AccordionItem>
+</Accordion>
+```
+
+## One at a time, or several
+
+<ComponentPreview name="accordion-multiple-demo" />
+
+| `type`     | Behaviour                   | `value` |
+| ---------- | --------------------------- | ------- |
+| `single`   | Opening one closes the last | string  |
+| `multiple` | Each panel is independent   | array   |
+
+`collapsible` applies to `single` only: without it, one panel is always open and the reader
+cannot close the last one.
+
+## The animation needs a package
+
+`AccordionContent` uses `animate-accordion-down` / `animate-accordion-up`, which come from
+[`tw-animate-css`](https://www.npmjs.com/package/tw-animate-css). `kairo-ui init` installs it and
+adds the import to your stylesheet:
+
+```css
+@import 'tailwindcss';
+@import 'tw-animate-css';
+```
+
+If it is missing, the panel still opens and closes — it just snaps, with no error anywhere.
+Tailwind emits nothing for a class it cannot resolve, so a missing animation is silent. If your
+accordion jumps, that import is the first thing to check.
+
+The keyframes interpolate against `--radix-accordion-content-height`, which Radix measures and
+writes onto the content element. That is why the height can animate at all: CSS cannot transition
+to `height: auto` on its own.
+
+## Height is measured, so content must be stable
+
+Radix reads the panel's height when it opens. Content that grows _after_ that — an image with no
+reserved space, a font swapping in — will be clipped mid-animation.
+
+Give images an [aspect ratio](/docs/components/aspect-ratio) and the measurement is correct on
+the first frame.
+
+## Anatomy
+
+| Slot               | Role                                                               |
+| ------------------ | ------------------------------------------------------------------ |
+| `Accordion`        | The root. Owns `type`, `value` and `collapsible`                   |
+| `AccordionItem`    | One row. Needs a `value` unique within the accordion               |
+| `AccordionTrigger` | The button. Renders its own chevron, which rotates when open       |
+| `AccordionContent` | The panel. Animates; put padding on it rather than on its children |
+
+Radix renders the trigger inside an `h3`. If that is the wrong level for your document, pass
+`asChild` on the header — the outline matters more than the default.
+
+<Callout>
+  Content inside a closed panel is removed from the DOM, so it is not findable with the browser's
+  find-in-page and not indexed as visible text. If everything must be searchable, render it open and
+  use `type="multiple"` with every value in `defaultValue`.
+</Callout>

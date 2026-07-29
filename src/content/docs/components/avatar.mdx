@@ -1,0 +1,134 @@
+<ComponentPreview name="avatar-demo" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add avatar
+```
+
+## Usage
+
+```tsx
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+```
+
+```tsx
+<Avatar>
+  <AvatarImage src="/avatars/01.svg" alt="Anong Ratana" />
+  <AvatarFallback>AR</AvatarFallback>
+</Avatar>
+```
+
+## Fallback
+
+<ComponentPreview name="avatar-fallback-demo" />
+
+Radix removes the `img` from the DOM entirely once it fails to load, so the fallback is not a
+layer showing through — it is the only thing left, and the only thing a screen reader will ever
+see for that avatar. Put the initials here, not in a `title` on the image.
+
+Always provide one. A missing avatar with no fallback is an empty circle.
+
+## Sizes
+
+<ComponentPreview name="avatar-sizes-demo" />
+
+| Prop   | Type                  | Default   |
+| ------ | --------------------- | --------- |
+| `size` | `sm \| default \| lg` | `default` |
+
+24 / 32 / 40px, with the fallback's text scaling to match. `size` is mirrored to the DOM as
+`data-size`.
+
+## Badge
+
+<ComponentPreview name="avatar-badge-demo" />
+
+```tsx
+<Avatar size="lg">
+  <AvatarImage src="/avatars/03.svg" alt="Somchai Prasert" />
+  <AvatarFallback>SP</AvatarFallback>
+  <AvatarBadge>
+    <span className="sr-only">Online</span>
+  </AvatarBadge>
+</Avatar>
+```
+
+The badge sits _outside_ the circle, which is why `Avatar` is `overflow-visible` and the radius
+is pushed onto the image and the fallback instead. Clipping the root would cut the badge in half.
+
+A coloured dot carries no text. Whatever it means — online, unread, away — say so in an `sr-only`
+span, or the state exists only for people who can see the colour.
+
+Its ring is drawn in `--background`. On a card, pass `className="ring-card"` so it matches what
+is actually behind it.
+
+## Avatar Group
+
+<ComponentPreview name="avatar-group-demo" />
+
+Each child gets a ring so the overlap reads as depth rather than as a collision. The rule targets
+`[&>*]` rather than only avatars, so `AvatarGroupCount` joins the same stack.
+
+### With a count
+
+<ComponentPreview name="avatar-group-count-demo" />
+
+"+3" on its own is not a sentence. Mark it `aria-hidden` and put the real phrasing beside it:
+
+```tsx
+<AvatarGroupCount>
+  <span aria-hidden>+3</span>
+  <span className="sr-only">3 more members</span>
+</AvatarGroupCount>
+```
+
+### With an icon
+
+<ComponentPreview name="avatar-group-icon-demo" />
+
+An icon here means the slot is an action, not a summary — so it has to be a real button. Use
+`asChild` rather than putting an `onClick` on the span:
+
+```tsx
+<AvatarGroupCount asChild>
+  <button type="button">
+    <PlusIcon aria-hidden />
+    <span className="sr-only">Invite a member</span>
+  </button>
+</AvatarGroupCount>
+```
+
+`AvatarGroupCount` takes the same `size` as the avatars around it. A group of `size="lg"` avatars
+ending in a default-size circle is the mistake this exists to prevent.
+
+## Dropdown
+
+<ComponentPreview name="avatar-dropdown-demo" />
+
+The avatar becomes decorative when it sits inside a control — the button is what needs the name,
+so `alt=""` and the label goes on the trigger:
+
+```tsx
+<DropdownMenuTrigger asChild>
+  <button type="button" aria-label="Open account menu" className="rounded-full">
+    <Avatar size="lg">
+      <AvatarImage src="/avatars/03.svg" alt="" />
+      <AvatarFallback>SP</AvatarFallback>
+    </Avatar>
+  </button>
+</DropdownMenuTrigger>
+```
+
+Naming both the image and the button makes a screen reader read the person's name twice.
+
+## Anatomy
+
+| Slot               | Role                                                          |
+| ------------------ | ------------------------------------------------------------- |
+| `Avatar`           | The circle. Owns `size` and the overflow behaviour            |
+| `AvatarImage`      | The photo. Removed from the DOM by Radix if it fails to load  |
+| `AvatarFallback`   | Initials. What remains, and what is announced                 |
+| `AvatarBadge`      | Status dot at the bottom-right, outside the circle            |
+| `AvatarGroup`      | Overlapping row                                               |
+| `AvatarGroupCount` | The trailing "+3" or action. `asChild` when it is interactive |

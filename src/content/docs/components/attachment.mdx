@@ -1,0 +1,131 @@
+<ComponentPreview name="attachment-demo" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add attachment
+```
+
+## Usage
+
+```tsx
+import {
+  Attachment,
+  AttachmentBody,
+  AttachmentDropzone,
+  AttachmentGroup,
+  AttachmentMeta,
+  AttachmentName,
+  AttachmentPreview,
+  AttachmentRemove,
+} from '@/components/ui/attachment'
+import { formatFileSize } from '@/lib/format'
+```
+
+```tsx
+<AttachmentGroup layout="grid">
+  <Attachment>
+    <AttachmentPreview src={file.url} />
+    <AttachmentName>{file.name}</AttachmentName>
+    <AttachmentMeta>PNG · {formatFileSize(file.size)}</AttachmentMeta>
+    <AttachmentRemove label={`Remove ${file.name}`} onClick={remove} />
+  </Attachment>
+</AttachmentGroup>
+```
+
+## Two layouts, one component
+
+`AttachmentGroup` owns `layout` and passes it down by context, so a card and a row are the same
+`Attachment` in two arrangements rather than two components you have to keep in sync.
+
+| `layout` | Shape                                                                          |
+| -------- | ------------------------------------------------------------------------------ |
+| `list`   | A row: square preview, name and meta stacked, remove at the end                |
+| `grid`   | A card: preview on top, name and meta beneath, remove floating over the corner |
+
+`list` is the default. Use `grid` when the thumbnail is the thing being identified — photos —
+and `list` when the file name is.
+
+## States
+
+<ComponentPreview name="attachment-upload-demo" />
+
+```tsx
+<Attachment status="uploading">
+```
+
+| `status`    | What it renders                                      |
+| ----------- | ---------------------------------------------------- |
+| `idle`      | The thumbnail, or a file icon                        |
+| `uploading` | A spinner in place of the thumbnail                  |
+| `error`     | A warning icon, a destructive border and tinted meta |
+
+The status reaches `AttachmentPreview` and `AttachmentMeta` through context, so setting it on
+`Attachment` is enough — nothing has to be threaded down by hand.
+
+**The percentage belongs in `AttachmentMeta`.** The spinner is `aria-hidden`, so that line is the
+only progress a screen reader gets. `Uploading · 64%` is announced; a spinning icon is not.
+
+## Dropzone
+
+<ComponentPreview name="attachment-dropzone-demo" />
+
+```tsx
+<AttachmentDropzone accept="image/*,.pdf" onFiles={(files) => setFiles((c) => [...c, ...files])}>
+  <CloudUploadIcon aria-hidden className="size-5" />
+  <span>Choose files or drag them here</span>
+</AttachmentDropzone>
+```
+
+| Prop       | Type                      | Default |
+| ---------- | ------------------------- | ------- |
+| `onFiles`  | `(files: File[]) => void` | —       |
+| `accept`   | `string`                  | —       |
+| `multiple` | `boolean`                 | `true`  |
+| `disabled` | `boolean`                 | `false` |
+
+**It holds no file list.** It reports what was chosen and the caller owns the state. An attachment
+list is nearly always part of a form whose state already lives somewhere, and a component keeping
+a private copy would end up fighting it.
+
+Three details that are easy to get wrong and are handled here:
+
+- The `input` is `sr-only`, **not** `hidden`. `display: none` removes an element from the
+  accessibility tree, which leaves keyboard users with no way to open the picker at all. As it
+  is, the label is a real focus stop.
+- `dragenter` and `dragleave` fire for every child element the pointer crosses, so a plain
+  boolean flickers as it moves over the icon or the label. The component counts enters against
+  leaves instead.
+- The input's value is cleared after each change, or choosing the same file twice in a row fires
+  no event the second time.
+
+<Callout>
+  `accept` is a filter on the file picker, not a guarantee. Someone can drag in anything, and the
+  attribute is trivially bypassed. Validate type and size again on the server.
+</Callout>
+
+## Naming the remove button
+
+```tsx
+<AttachmentRemove label={`Remove ${file.name}`} />
+```
+
+An icon-only button needs an accessible name, and `label` becomes visually-hidden text next to
+the icon. It defaults to "Remove attachment" — fine for one, useless for a list of six, where a
+screen reader reads out six identical buttons.
+
+## Anatomy
+
+| Slot                 | Role                                                         |
+| -------------------- | ------------------------------------------------------------ |
+| `AttachmentGroup`    | Layout. Owns `layout` and distributes it                     |
+| `Attachment`         | One file. Owns `status` and distributes it                   |
+| `AttachmentPreview`  | Thumbnail, spinner, warning or file icon, depending on state |
+| `AttachmentName`     | The file name. Truncates rather than wraps                   |
+| `AttachmentMeta`     | Type, size, or progress. The line that gets announced        |
+| `AttachmentBody`     | Wraps name + meta in the `list` layout so they stack         |
+| `AttachmentRemove`   | Icon button with a required accessible name                  |
+| `AttachmentDropzone` | Drop target wrapping a real file input                       |
+
+`formatFileSize` ships in `@/lib/format` rather than here — a module exporting both components
+and plain functions breaks React Fast Refresh.

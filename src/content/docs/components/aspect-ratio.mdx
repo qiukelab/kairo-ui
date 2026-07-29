@@ -1,0 +1,56 @@
+<ComponentPreview name="aspect-ratio-demo" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add aspect-ratio
+```
+
+## Usage
+
+```tsx
+import { AspectRatio } from '@/components/ui/aspect-ratio'
+```
+
+```tsx
+<AspectRatio ratio={16 / 9} className="overflow-hidden rounded-lg bg-muted">
+  <img src="/cover.jpg" alt="" className="size-full object-cover" />
+</AspectRatio>
+```
+
+## Reach for Tailwind first
+
+Most of the time you do not need this component:
+
+```tsx
+<img src="/cover.jpg" alt="" className="aspect-video w-full rounded-lg object-cover" />
+```
+
+`aspect-video`, `aspect-square` and `aspect-[4/3]` are pure CSS. They cost no JavaScript, work
+before hydration, and cannot get out of step with the markup.
+
+`AspectRatio` earns its place in one case: **the ratio is a runtime value.** A media grid where
+each item reports its own dimensions cannot be expressed as a class you wrote in advance, because
+Tailwind only generates the utilities it can find in your source.
+
+```tsx
+{
+  media.map((item) => (
+    <AspectRatio key={item.id} ratio={item.width / item.height}>
+      <img src={item.url} alt={item.alt} className="size-full object-cover" />
+    </AspectRatio>
+  ))
+}
+```
+
+## Reserving the space is the point
+
+Either approach fixes the same problem: an image with no declared ratio occupies zero height
+until it loads, and then shoves everything below it down the page. Set the ratio and the gap is
+reserved from the first paint.
+
+| Prop    | Type     | Default |
+| ------- | -------- | ------- |
+| `ratio` | `number` | `1`     |
+
+`ratio` is width ÷ height — `16 / 9`, not `9 / 16`.

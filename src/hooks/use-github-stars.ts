@@ -1,4 +1,3 @@
-import { StarIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import { siteConfig } from '@/lib/site'
@@ -21,11 +20,18 @@ function readCache(): number | null {
 }
 
 /**
+ * The star count, or `null` while it is unknown.
+ *
+ * A hook rather than a component because the count has to reach the GitHub
+ * link's `aria-label` as a value: rendered beside the link it read as a second
+ * control, and rendered inside it the accessible name would have been the bare
+ * digits.
+ *
  * The unauthenticated GitHub API allows 60 requests an hour per IP, so the
  * result is cached for an hour and every failure is swallowed — the header must
  * not depend on a third-party call succeeding.
  */
-export function GitHubStars() {
+export function useGitHubStars(): number | null {
   const [stars, setStars] = useState<number | null>(readCache)
 
   useEffect(() => {
@@ -58,13 +64,10 @@ export function GitHubStars() {
     return () => controller.abort()
   }, [stars])
 
-  if (stars === null) return null
+  return stars
+}
 
-  return (
-    <span className="hidden items-center gap-1 text-xs text-muted-foreground tabular-nums sm:inline-flex">
-      <StarIcon className="size-3" aria-hidden />
-      {Intl.NumberFormat('en', { notation: 'compact' }).format(stars)}
-      <span className="sr-only">GitHub stars</span>
-    </span>
-  )
+/** "120k" rather than "120345" — the header has no room for exact figures. */
+export function formatStars(count: number): string {
+  return Intl.NumberFormat('en', { notation: 'compact' }).format(count)
 }

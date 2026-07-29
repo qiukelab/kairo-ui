@@ -1,10 +1,10 @@
 import { Link, useLocation } from 'react-router-dom'
 
 import { DocsSearch } from '@/components/docs/docs-search'
-import { GitHubStars } from '@/components/layout/github-stars'
 import { MobileNav } from '@/components/layout/mobile-nav'
 import { ModeToggle } from '@/components/layout/mode-toggle'
 import { Button } from '@/components/ui/button'
+import { formatStars, useGitHubStars } from '@/hooks/use-github-stars'
 import { githubUrl, mainNav, siteConfig } from '@/lib/site'
 import { cn } from '@/lib/utils'
 
@@ -16,12 +16,53 @@ function GitHubMark(props: React.SVGProps<SVGSVGElement>) {
   )
 }
 
+/** Decorative rule between the header's groups. Purely visual, so it is hidden
+ *  from assistive technology, and it collapses below `sm` where the row is
+ *  already tight enough not to need the separation. */
+function HeaderDivider() {
+  return <span aria-hidden className="hidden h-4 w-px shrink-0 bg-border sm:block" />
+}
+
+/**
+ * The mark and the count are one control, not two.
+ *
+ * The name comes from `aria-label` rather than from the visible digits: a link
+ * announced as "120k" says nothing, and the count is absent whenever the API
+ * call fails, so the label has to read correctly in both states.
+ */
+function GitHubLink() {
+  const stars = useGitHubStars()
+
+  return (
+    <Button variant="ghost" size="sm" asChild>
+      <a
+        href={githubUrl}
+        target="_blank"
+        rel="noreferrer"
+        aria-label={
+          stars === null ? 'GitHub repository' : `GitHub repository, ${formatStars(stars)} stars`
+        }
+      >
+        <GitHubMark className="size-4" aria-hidden />
+        {stars !== null && (
+          <span aria-hidden className="hidden text-xs tabular-nums sm:inline">
+            {formatStars(stars)}
+          </span>
+        )}
+      </a>
+    </Button>
+  )
+}
+
 export function SiteHeader() {
   const { pathname } = useLocation()
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
-      <div className="mx-auto flex h-14 w-full max-w-7xl items-center gap-2 px-4 sm:px-6 lg:px-8">
+      {/* `max-w-[120rem]` and this padding must match DocsLayout's shell. The
+          header is the same edge as the sidebar and the TOC, so any drift shows
+          up as the logo sitting out of line with the navigation beneath it. */}
+      <div className="mx-auto flex h-14 w-full max-w-[120rem] items-center gap-2 px-4 sm:px-6 lg:px-8">
         <MobileNav />
 
         <Link to="/" className="flex shrink-0 items-center gap-2 font-semibold">
@@ -46,14 +87,11 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-1.5">
-          <DocsSearch className="w-36 sm:w-56 lg:w-64" />
-          <GitHubStars />
-          <Button variant="ghost" size="icon-sm" asChild>
-            <a href={githubUrl} target="_blank" rel="noreferrer" aria-label="GitHub repository">
-              <GitHubMark className="size-4" />
-            </a>
-          </Button>
+        <div className="ml-auto flex items-center gap-2">
+          <DocsSearch className="w-36 sm:w-56 lg:w-72" />
+          <HeaderDivider />
+          <GitHubLink />
+          <HeaderDivider />
           <ModeToggle />
         </div>
       </div>
