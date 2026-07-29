@@ -1,0 +1,76 @@
+<ComponentPreview name="alert-demo" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add alert
+```
+
+## Usage
+
+```tsx
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+```
+
+```tsx
+<Alert>
+  <RocketIcon />
+  <AlertTitle>Deployment finished</AlertTitle>
+  <AlertDescription>It may take a minute to reach every edge region.</AlertDescription>
+</Alert>
+```
+
+## Destructive
+
+<ComponentPreview name="alert-destructive-demo" />
+
+```tsx
+<Alert variant="destructive">
+  <CircleAlertIcon />
+  <AlertTitle>Payment could not be processed</AlertTitle>
+  <AlertDescription>Your card was declined.</AlertDescription>
+</Alert>
+```
+
+The destructive variant is a tint, not a fill. A solid red block reads as an error page rather
+than as one message on a working page, and it makes the text underneath harder to read in dark
+mode.
+
+## The icon is optional
+
+There is no `icon` prop. Put an `svg` as the first child and the layout adapts:
+
+```tsx
+'grid-cols-[0_1fr] has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr]'
+```
+
+With no icon the alert is a single column and nothing is indented. With one, a gutter appears
+and the title and description line up against it. Same self-querying idea as `CardHeader`
+reacting to a `CardAction` — nothing to remember, and no way to get the two out of step.
+
+## It announces itself
+
+`Alert` carries `role="alert"`. That is a live region: assistive technology interrupts and reads
+it as soon as it appears.
+
+That is right for something that just happened — a failed payment, a finished deploy — and wrong
+for copy that was on the page all along, which will be announced again every time the region
+re-renders. For a static tip, use a `Callout` or a plain styled `div`.
+
+<Callout>
+  An alert that appears in response to a user action should also move focus, or at least be near the
+  control that caused it. A live region is announced, but a keyboard user is still left wherever
+  they were.
+</Callout>
+
+## Anatomy
+
+| Slot               | Role                                                         |
+| ------------------ | ------------------------------------------------------------ |
+| `Alert`            | The container. Owns the variant, the grid and `role="alert"` |
+| `AlertTitle`       | One line, clamped. Keep it short enough not to wrap          |
+| `AlertDescription` | Supporting copy. Accepts block content                       |
+
+| Prop      | Type                     | Default   |
+| --------- | ------------------------ | --------- |
+| `variant` | `default \| destructive` | `default` |

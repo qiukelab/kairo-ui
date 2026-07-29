@@ -1,0 +1,94 @@
+<ComponentPreview name="alert-dialog-demo" />
+
+## Installation
+
+```bash
+npx kairo-ui@latest add alert-dialog
+```
+
+## Usage
+
+```tsx
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+```
+
+```tsx
+<AlertDialog>
+  <AlertDialogTrigger asChild>
+    <Button variant="outline">Delete project</Button>
+  </AlertDialogTrigger>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Delete this project?</AlertDialogTitle>
+      <AlertDialogDescription>This cannot be undone.</AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>Cancel</AlertDialogCancel>
+      <AlertDialogAction variant="destructive">Delete project</AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+```
+
+## Not a Dialog with different words
+
+[Dialog](/docs/components/dialog) is dismissible: click the overlay, press Escape, or hit the
+corner X. That is right for a form someone opened and changed their mind about.
+
+An alert dialog interrupts to ask a question that has consequences, so it takes those exits away.
+Radix blocks the outside-click and Escape dismissals, and this component ships **no close
+button** — putting one back would restore the escape hatch and leave you with a Dialog wearing a
+different name.
+
+Use it when the answer is irreversible. Use `Dialog` for everything else.
+
+## Action and Cancel are Buttons
+
+```tsx
+<AlertDialogPrimitive.Action asChild>
+  <Button {...props} />
+</AlertDialogPrimitive.Action>
+```
+
+They accept every [Button](/docs/components/button) prop, because they _are_ Buttons —
+`variant="destructive"` on the action, and `Cancel` defaults to `variant="outline"`. Nothing here
+copies Button's class string, so a change to Button reaches this component for free.
+
+Neither stamps a `data-slot` of its own. Button sets `data-slot="button"` before its prop spread,
+so one passed here would silently replace it, and a consumer styling `[data-slot=button]`
+globally would find exactly these two buttons quietly exempt. Target them through
+`AlertDialogFooter` instead.
+
+## Name the action, not the outcome
+
+```tsx
+{
+  /* Weak: "OK" is meaningless once the dialog is dismissed */
+}
+;<AlertDialogAction>OK</AlertDialogAction>
+
+{
+  /* Strong: readable on its own, and out of context in a button list */
+}
+;<AlertDialogAction variant="destructive">Delete project</AlertDialogAction>
+```
+
+The title asks the question, the description supplies the consequence, and the buttons name what
+each choice does. Cancel comes first in the DOM so it is the first tab stop — the safe option
+should be the one you reach by accident.
+
+<Callout>
+  Focus moves into the dialog on open and returns to the trigger on close. If you render the trigger
+  conditionally and it disappears, focus falls back to the body — keep the trigger mounted, or move
+  focus deliberately in `onOpenChange`.
+</Callout>

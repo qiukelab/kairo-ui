@@ -14,6 +14,8 @@ const TOKENS_START =
   '/* kairo-ui:tokens:start — managed by `kairo-ui init`, edits below are kept */'
 const TOKENS_END = '/* kairo-ui:tokens:end */'
 
+const ANIMATE_IMPORT = "@import 'tw-animate-css';"
+
 const CSS_CANDIDATES = [
   'src/styles/globals.css',
   'src/app/globals.css',
@@ -80,6 +82,11 @@ export async function init(options: InitOptions) {
   await mergeTokens(path.join(options.cwd, css), tokens.content)
   logger.success(`Merged design tokens into ${css}`)
 
+  // Separate from the token block on purpose — see ensureAnimateImport.
+  if (await ensureAnimateImport(path.join(options.cwd, css))) {
+    logger.success(`Added ${ANIMATE_IMPORT} to ${css}`)
+  }
+
   const utils = await fetchItem(options.registry, 'utils', options.cwd)
   const planned = await planFiles([utils], config, options.cwd)
   const toWrite = planned.filter((file) => !file.exists)
@@ -94,6 +101,11 @@ export async function init(options: InitOptions) {
     'class-variance-authority',
     'lucide-react',
     'radix-ui',
+    // Supplies animate-in/out, the slide/fade/zoom utilities and the
+    // accordion/collapsible keyframes. Every overlay component uses them, and
+    // Tailwind emits nothing for a class it cannot resolve — so without this the
+    // components render, silently, with no animation at all.
+    'tw-animate-css',
   ]
 
   if (options.install) {
@@ -154,6 +166,50 @@ async function mergeTokens(file: string, tokens: string) {
   }
 
   await writeFile(file, `${current.trimEnd()}\n\n${block}`, 'utf8')
+}
+
+/**
+ * Put `@import 'tw-animate-css'` among the stylesheet's leading imports.
+ *
+ * This cannot ride along inside the token block. `mergeTokens` inlines that
+ * content wherever the markers sit — usually the end of the file — and CSS
+ * requires every `@import` to precede all other rules. An import written into
+ * the middle of a stylesheet is not an error, it is silently discarded, which
+ * is the worst of both worlds.
+ *
+ * So: insert after the last leading `@import`, or at the very top if there is
+ * none. Returns whether anything was written, and is a no-op on a second run —
+ * this is the one place `init` edits outside its own markers, so it has to be
+ * safe to repeat.
+ */
+async function ensureAnimateImport(file: string): Promise<boolean> {
+  let current: string
+  try {
+    current = await readFile(file, 'utf8')
+  } catch {
+    return false
+  }
+
+  if (/@import\s+["']tw-animate-css["']/.test(current)) return false
+
+  const lines = current.split('\n')
+  let insertAt = 0
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i].trim()
+    // Skip blanks and comment lines; they can legally sit above the imports.
+    if (line === '' || line.startsWith('/*') || line.startsWith('*') || line.startsWith('//')) {
+      continue
+    }
+    if (line.startsWith('@import')) {
+      insertAt = i + 1
+      continue
+    }
+    break
+  }
+
+  lines.splice(insertAt, 0, ANIMATE_IMPORT)
+  await writeFile(file, lines.join('\n'), 'utf8')
+  return true
 }
 
 async function fileExists(file: string) {

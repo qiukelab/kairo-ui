@@ -11,7 +11,11 @@
       "dependencies": ["tailwindcss"],
       "registryDependencies": [],
       "files": [
-        { "path": "src/styles/tokens.css", "target": "tokens.css", "type": "registry:theme" }
+        {
+          "path": "src/styles/tokens.css",
+          "target": "tokens.css",
+          "type": "registry:theme"
+        }
       ]
     },
     {
@@ -21,7 +25,133 @@
       "description": "Class-name merge helper. Every component imports it.",
       "dependencies": ["clsx", "tailwind-merge"],
       "registryDependencies": [],
-      "files": [{ "path": "src/lib/utils.ts", "target": "lib/utils.ts", "type": "registry:lib" }]
+      "files": [
+        {
+          "path": "src/lib/utils.ts",
+          "target": "lib/utils.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "format",
+      "type": "registry:lib",
+      "title": "formatFileSize",
+      "description": "Byte counts as text. Its own module so Fast Refresh keeps working.",
+      "dependencies": [],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "src/lib/format.ts",
+          "target": "lib/format.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "accordion",
+      "type": "registry:ui",
+      "title": "Accordion",
+      "description": "Stacked sections that expand one at a time, or several.",
+      "dependencies": ["radix-ui", "lucide-react", "tw-animate-css"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "src/components/ui/accordion.tsx",
+          "target": "ui/accordion.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "alert",
+      "type": "registry:ui",
+      "title": "Alert",
+      "description": "A message that announces itself the moment it appears.",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "src/components/ui/alert.tsx",
+          "target": "ui/alert.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "alert-dialog",
+      "type": "registry:ui",
+      "title": "Alert Dialog",
+      "description": "A modal that interrupts to confirm something irreversible.",
+      "dependencies": ["radix-ui", "tw-animate-css"],
+      "registryDependencies": ["button", "utils"],
+      "files": [
+        {
+          "path": "src/components/ui/alert-dialog.tsx",
+          "target": "ui/alert-dialog.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aspect-ratio",
+      "type": "registry:ui",
+      "title": "Aspect Ratio",
+      "description": "Reserves space at a ratio you only know at runtime.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "src/components/ui/aspect-ratio.tsx",
+          "target": "ui/aspect-ratio.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "attachment",
+      "type": "registry:ui",
+      "title": "Attachment",
+      "description": "File cards and rows, with a drop target and upload states.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["format", "utils"],
+      "files": [
+        {
+          "path": "src/components/ui/attachment.tsx",
+          "target": "ui/attachment.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "avatar",
+      "type": "registry:ui",
+      "title": "Avatar",
+      "description": "A user image with a fallback, a status badge and overlapping groups.",
+      "dependencies": ["radix-ui", "class-variance-authority"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "src/components/ui/avatar.tsx",
+          "target": "ui/avatar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "dropdown-menu",
+      "type": "registry:ui",
+      "title": "Dropdown Menu",
+      "description": "A menu of actions, with checkboxes, radios and sub-menus.",
+      "dependencies": ["radix-ui", "lucide-react", "tw-animate-css"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "src/components/ui/dropdown-menu.tsx",
+          "target": "ui/dropdown-menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
     },
     {
       "name": "button",
@@ -46,7 +176,11 @@
       "dependencies": ["class-variance-authority", "radix-ui"],
       "registryDependencies": ["utils"],
       "files": [
-        { "path": "src/components/ui/badge.tsx", "target": "ui/badge.tsx", "type": "registry:ui" }
+        {
+          "path": "src/components/ui/badge.tsx",
+          "target": "ui/badge.tsx",
+          "type": "registry:ui"
+        }
       ]
     },
     {
@@ -57,7 +191,11 @@
       "dependencies": ["class-variance-authority"],
       "registryDependencies": ["utils"],
       "files": [
-        { "path": "src/components/ui/card.tsx", "target": "ui/card.tsx", "type": "registry:ui" }
+        {
+          "path": "src/components/ui/card.tsx",
+          "target": "ui/card.tsx",
+          "type": "registry:ui"
+        }
       ]
     },
     {
@@ -68,7 +206,11 @@
       "dependencies": [],
       "registryDependencies": ["utils"],
       "files": [
-        { "path": "src/components/ui/input.tsx", "target": "ui/input.tsx", "type": "registry:ui" }
+        {
+          "path": "src/components/ui/input.tsx",
+          "target": "ui/input.tsx",
+          "type": "registry:ui"
+        }
       ]
     },
     {
@@ -79,7 +221,11 @@
       "dependencies": ["radix-ui"],
       "registryDependencies": ["utils"],
       "files": [
-        { "path": "src/components/ui/label.tsx", "target": "ui/label.tsx", "type": "registry:ui" }
+        {
+          "path": "src/components/ui/label.tsx",
+          "target": "ui/label.tsx",
+          "type": "registry:ui"
+        }
       ]
     },
     {
@@ -90,7 +236,11 @@
       "dependencies": ["radix-ui"],
       "registryDependencies": ["utils", "label"],
       "files": [
-        { "path": "src/components/ui/field.tsx", "target": "ui/field.tsx", "type": "registry:ui" }
+        {
+          "path": "src/components/ui/field.tsx",
+          "target": "ui/field.tsx",
+          "type": "registry:ui"
+        }
       ]
     },
     {
@@ -128,10 +278,14 @@
       "type": "registry:ui",
       "title": "Dialog",
       "description": "A modal window layered over the page, with focus trapping.",
-      "dependencies": ["radix-ui", "lucide-react"],
+      "dependencies": ["radix-ui", "lucide-react", "tw-animate-css"],
       "registryDependencies": ["utils"],
       "files": [
-        { "path": "src/components/ui/dialog.tsx", "target": "ui/dialog.tsx", "type": "registry:ui" }
+        {
+          "path": "src/components/ui/dialog.tsx",
+          "target": "ui/dialog.tsx",
+          "type": "registry:ui"
+        }
       ]
     },
     {
@@ -142,7 +296,11 @@
       "dependencies": ["radix-ui"],
       "registryDependencies": ["utils"],
       "files": [
-        { "path": "src/components/ui/tabs.tsx", "target": "ui/tabs.tsx", "type": "registry:ui" }
+        {
+          "path": "src/components/ui/tabs.tsx",
+          "target": "ui/tabs.tsx",
+          "type": "registry:ui"
+        }
       ]
     },
     {
@@ -150,7 +308,7 @@
       "type": "registry:ui",
       "title": "Tooltip",
       "description": "A hint that appears on hover or keyboard focus.",
-      "dependencies": ["radix-ui"],
+      "dependencies": ["radix-ui", "tw-animate-css"],
       "registryDependencies": ["utils"],
       "files": [
         {
@@ -180,10 +338,14 @@
       "type": "registry:ui",
       "title": "Sheet",
       "description": "A panel that slides in from an edge. Used by the mobile navigation.",
-      "dependencies": ["radix-ui", "lucide-react"],
+      "dependencies": ["radix-ui", "lucide-react", "tw-animate-css"],
       "registryDependencies": ["utils"],
       "files": [
-        { "path": "src/components/ui/sheet.tsx", "target": "ui/sheet.tsx", "type": "registry:ui" }
+        {
+          "path": "src/components/ui/sheet.tsx",
+          "target": "ui/sheet.tsx",
+          "type": "registry:ui"
+        }
       ]
     }
   ]

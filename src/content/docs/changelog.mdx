@@ -1,5 +1,32 @@
 ## Unreleased
 
+### Added — seven components
+
+- **Accordion**, **Alert**, **Alert Dialog**, **Aspect Ratio**, **Attachment**, **Avatar** and
+  **Dropdown Menu**.
+- **Avatar** ships more than the primitive: `AvatarBadge` for a status dot outside the circle,
+  `AvatarGroup` for an overlapping row, and `AvatarGroupCount` for the trailing "+3" — which
+  takes `asChild`, because an icon there means the slot is an action and should be a button.
+- **Alert Dialog** has no close button by design. Radix already blocks outside-click and Escape;
+  adding an X would restore the escape hatch and leave you with a `Dialog` under another name.
+  `AlertDialogAction` and `AlertDialogCancel` wrap a real `Button` through `asChild`, so they
+  take every Button prop and copy none of its classes.
+- **Attachment** has no upstream primitive, so its shape is a decision: `AttachmentGroup` owns
+  `layout` (`grid | list`) and `Attachment` owns `status` (`idle | uploading | error`), both
+  distributed by context. `AttachmentDropzone` wraps a real, focusable file input and reports
+  through `onFiles` — it holds no file list, because the caller's form already has one.
+- `formatFileSize` in `@/lib/format`, installable as the `format` registry item.
+
+### Fixed — animation utilities were never declared
+
+- **`tw-animate-css` is now a declared dependency.** `dialog`, `sheet` and `tooltip` have used
+  `animate-in`, `fade-in-0`, `zoom-in-95` and `slide-in-from-*` since they shipped, but nothing
+  in the registry said so and `init` never installed it. Tailwind emits nothing for a class it
+  cannot resolve, so a consumer got components with **no animation and no error**. `init` now
+  installs the package and adds `@import 'tw-animate-css'` among the leading imports of your
+  stylesheet — idempotently, and outside the token block, because an `@import` written into the
+  middle of a stylesheet is silently discarded.
+
 ### Fixed
 
 - **Tooltip** had no visible arrow. The tip is drawn from the arrow SVG's `background` — a square

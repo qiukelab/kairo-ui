@@ -1,0 +1,9 @@
+<!--
+  Stand-in avatar for the docs. Fixed hex rather than design tokens on purpose:
+  loaded through <img>, an SVG is a separate document with no access to the
+  page's custom properties. Docs-site asset only — not in registry.json.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <rect width="128" height="128" fill="#c2410c" />
+  <text x="64" y="64" fill="#ffedd5" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="52" font-weight="600" text-anchor="middle" dominant-baseline="central">TN</text>
+</svg>

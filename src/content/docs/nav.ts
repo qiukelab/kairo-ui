@@ -58,6 +58,42 @@ export const docsNav: DocsNavGroup[] = [
     title: 'Components',
     items: [
       {
+        title: 'Accordion',
+        href: '/docs/components/accordion',
+        description: 'Stacked sections that expand one at a time, or several.',
+        label: 'New',
+      },
+      {
+        title: 'Alert',
+        href: '/docs/components/alert',
+        description: 'A message that announces itself the moment it appears.',
+        label: 'New',
+      },
+      {
+        title: 'Alert Dialog',
+        href: '/docs/components/alert-dialog',
+        description: 'A modal that interrupts to confirm something irreversible.',
+        label: 'New',
+      },
+      {
+        title: 'Aspect Ratio',
+        href: '/docs/components/aspect-ratio',
+        description: 'Reserves space at a ratio you only know at runtime.',
+        label: 'New',
+      },
+      {
+        title: 'Attachment',
+        href: '/docs/components/attachment',
+        description: 'File cards and rows, with a drop target and upload states.',
+        label: 'New',
+      },
+      {
+        title: 'Avatar',
+        href: '/docs/components/avatar',
+        description: 'A user image with a fallback, a status badge and overlapping groups.',
+        label: 'New',
+      },
+      {
         title: 'Button',
         href: '/docs/components/button',
         description: 'Six variants, eight sizes, and `asChild` for rendering as any element.',
@@ -99,6 +135,12 @@ export const docsNav: DocsNavGroup[] = [
         title: 'Dialog',
         href: '/docs/components/dialog',
         description: 'A modal window layered over the page, with focus trapping.',
+      },
+      {
+        title: 'Dropdown Menu',
+        href: '/docs/components/dropdown-menu',
+        description: 'A menu of actions, with checkboxes, radios and sub-menus.',
+        label: 'New',
       },
       {
         title: 'Tabs',
