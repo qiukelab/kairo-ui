@@ -21,7 +21,10 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
-      <div className="mx-auto flex h-14 w-full max-w-7xl items-center gap-2 px-4 sm:px-6 lg:px-8">
+      {/* `max-w-[120rem]` and this padding must match DocsLayout's shell. The
+          header is the same edge as the sidebar and the TOC, so any drift shows
+          up as the logo sitting out of line with the navigation beneath it. */}
+      <div className="mx-auto flex h-14 w-full max-w-[120rem] items-center gap-2 px-4 sm:px-6 lg:px-8">
         <MobileNav />
 
         <Link to="/" className="flex shrink-0 items-center gap-2 font-semibold">
